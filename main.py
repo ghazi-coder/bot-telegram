@@ -38,7 +38,6 @@ def menu(message):
 
 4️⃣ MEDSOS 📱
 /igvid > Unduh video dari IG
-/tiktokVid > Unduh video TikTok tanpa watermark (masih dalam perbaikan!)
 
 5️⃣ EDUCATION 🏫
 /wiki text  > pencarian dengan wikipedia
