@@ -38,6 +38,7 @@ def menu(message):
 
 4️⃣ MEDSOS 📱
 /igvid > Unduh video dari IG
+/tiktokVid > Unduh video TikTok tanpa watermark (masih dalam perbaikan!)
 
 5️⃣ EDUCATION 🏫
 /wiki text  > pencarian dengan wikipedia
@@ -303,9 +304,9 @@ def downloadig(message):
         querystring = {"shortcode": link}
         bot.send_message(message.chat.id, "Sabarr Boss...")
         headers = {
-            'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c",
-            'x-rapidapi-host': "instagram47.p.rapidapi.com"
-        }
+    'x-rapidapi-host': "instagram47.p.rapidapi.com",
+    'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
+    }
         response = requests.request(
             "GET", url, headers=headers, params=querystring)
 
