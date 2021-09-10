@@ -5,6 +5,8 @@ import datetime
 import time
 #modul scrapping web
 from urllib.request import urlopen
+import urllib
+
 import json
 import requests
 from bs4 import BeautifulSoup
