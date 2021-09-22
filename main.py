@@ -39,8 +39,9 @@ def menu(message):
 /news > Update Headline News media Indonesia
 
 4️⃣ MEDSOS 📱
-/igvid > Unduh video dari IG
+/igVid > Unduh video IG
 /tiktokVid > Unduh video TikTok tanpa watermark 
+/twitterVid > Unduh Video Twitter
 
 5️⃣ EDUCATION 🏫
 /wiki text  > pencarian dengan wikipedia
@@ -258,7 +259,7 @@ def jadwalRilis(message):
 
 #                                                    M E D S O S
 #INSTAGRAMM
-@bot.message_handler(commands=['igvid','tiktokVid'])
+@bot.message_handler(commands=['igVid','tiktokVid', 'twitterVid'])
 def downloadig(message):
     bot.send_message(message.chat.id, "Paste aja linknya di chat...")
     
@@ -328,7 +329,19 @@ def downloadvidtiktok(message):
         out.close()
         #log(message, f"TikTok Vid {namaFile}")
         
+# TWITTER
+@bot.message_handler(regexp='https://twitter.com/')
+def downloadvidtiktok(message):    
 
+    url = requests.get(f"https://dhn-api.herokuapp.com/downloader/twitter/tweet?url={message.text.replace(message.text[len(message.text)-2:], '19')}")
+    data = url.json()
+    video = data['result']['media_resources']['video_mp4_640x']
+
+    namaFile = f"{message.from_user.first_name}_{data['result']['id']}.mp4"
+    urllib.request.urlretrieve(video, namaFile)
+        
+    kirim(namaFile, message.chat.id)
+    log(message, f"Twitter Vid {namaFile}")
         
 #PERINTAH BERITA HEADLINE MEDIA INDONESIA
 @bot.message_handler(commands=['news'])
