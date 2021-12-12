@@ -328,7 +328,7 @@ def downloadvidtiktok(message):
         item = types.InlineKeyboardButton(
         'Download Musik 🎶', callback_data='download musik tiktok')
         markup.row(item)
-        bot.send_message(message.chat.id, reply_markup=markup)
+        bot.send_message(message.chat.id,"click tombol dibawah untuk mendownload musik", reply_markup=markup)
     # kirim musik ketika diclick tombol
         @bot.callback_query_handler(func=lambda call: True)
         def callbacks(call):
