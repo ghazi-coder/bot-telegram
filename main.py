@@ -323,13 +323,22 @@ def downloadvidtiktok(message):
         namaFile = f"{message.from_user.first_name}_{sumber}.mp4"
         namaFileMusik = f"{data['music_author']}.mp3"
         urllib.request.urlretrieve(video, namaFile)
-        kirim(namaFile, message.chat.id)
      # tampilkan button untuk mendownload musik
         markup = types.InlineKeyboardMarkup()
         item = types.InlineKeyboardButton(
         'Download Musik 🎶', callback_data='download musik tiktok')
         markup.row(item)
         bot.send_message(message.chat.id,"click tombol dibawah untuk mendownload musik", reply_markup=markup)
+        while True:
+            try:
+              out = open(namaFile, 'rb')
+              x = bot.send_video(message.chat.id, out, reply_markup=markup)
+              out.close()
+
+              if x is not EOFError:
+                break
+            except:
+              continue
     # kirim musik ketika diclick tombol
         @bot.callback_query_handler(func=lambda call: True)
         def callbacks(call):
