@@ -277,7 +277,7 @@ def kirim(namaFile, tujuan):
 
 @bot.message_handler(regexp='https://www.instagram.com/')
 def downloadig(message):
-
+        bot.send_chat_action(message.chat.id, "upload_video")
         masukan = message.text
         idP = message.chat.id
         list = masukan.split('/')
@@ -313,6 +313,7 @@ def downloadig(message):
 
 @bot.message_handler(regexp='https://vt.tiktok.com/')
 def downloadvidtiktok(message):
+        bot.send_chat_action(message.chat.id, "upload_video")
         url = requests.get(f"https://godownloader.com/api/tiktok-no-watermark-free?url=[{message.text}]&key=godownloader.com")
         data = url.json()
         video = data['video_no_watermark'] 
@@ -332,6 +333,7 @@ def downloadvidtiktok(message):
     # kirim musik ketika diclick tombol
         @bot.callback_query_handler(func=lambda call: True)
         def callbacks(call):
+            bot.send_chat_action(message.chat.id, "upload_audio")
             if call.data == "download musik tiktok":
                 urllib.request.urlretrieve(musik, namaFileMusik)
                 out = open(namaFileMusik, 'rb')
