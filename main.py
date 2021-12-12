@@ -318,16 +318,26 @@ def downloadvidtiktok(message):
         video = data['video_no_watermark'] 
         musik = data['music_url']  
         sumber = data['aweme_id']
-
+    # kirim video
         namaFile = f"{message.from_user.first_name}_{sumber}.mp4"
         namaFileMusik = f"{data['music_author']}.mp3"
         urllib.request.urlretrieve(video, namaFile)
-        urllib.request.urlretrieve(musik, namaFileMusik)
         kirim(namaFile, message.chat.id)
-        out = open(namaFileMusik, 'rb')
-        bot.send_audio(message.chat.id, out)
-        out.close()
-        #log(message, f"TikTok Vid {namaFile}")
+     # tampilkan button untuk mendownload musik
+        markup = types.InlineKeyboardMarkup()
+        item = types.InlineKeyboardButton(
+        'Download Musik 🎶', callback_data='download musik tiktok')
+        markup.row(item)
+        bot.send_message(message.chat.id, reply_markup=markup)
+    # kirim musik ketika diclick tombol
+        @bot.callback_query_handler(func=lambda call: True)
+        def callbacks(call):
+            if call.data == "download musik tiktok":
+                urllib.request.urlretrieve(musik, namaFileMusik)
+                out = open(namaFileMusik, 'rb')
+                bot.send_audio(message.chat.id, out)
+                out.close()
+        log(message, f"TikTok Vid {namaFile}")
         
 # TWITTER
 @bot.message_handler(regexp='https://twitter.com/')
