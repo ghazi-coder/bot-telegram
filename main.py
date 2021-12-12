@@ -328,7 +328,6 @@ def downloadvidtiktok(message):
         item = types.InlineKeyboardButton(
         'Download Musik 🎶', callback_data='download musik tiktok')
         markup.row(item)
-        bot.send_message(message.chat.id,"click tombol dibawah untuk mendownload musik", reply_markup=markup)
         while True:
             try:
               out = open(namaFile, 'rb')
