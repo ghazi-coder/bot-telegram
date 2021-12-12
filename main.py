@@ -328,17 +328,16 @@ def downloadvidtiktok(message):
         item = types.InlineKeyboardButton(
         'Download Musik 🎶', callback_data='download musik tiktok')
         markup.row(item)
-        kirim(namaFile, message.chat.id)
-#         while True:
-#             try:
-#               out = open(namaFile, 'rb')
-#               x = bot.send_video(message.chat.id, out, reply_markup=markup)
-#               out.close()
+        while True:
+            try:
+              out = open(namaFile, 'rb')
+              x = bot.send_video(message.chat.id, out, reply_markup=markup)
+              out.close()
 
-#               if x is not EOFError:
-#                 break
-#             except:
-#               continue
+              if x is not EOFError:
+                break
+            except:
+              continue
     # kirim musik ketika diclick tombol
         @bot.callback_query_handler(func=lambda call: True)
         def callbacks(call):
