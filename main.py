@@ -318,7 +318,7 @@ def downloadvidtiktok(message):
         data = url.json()
         video = data['video_no_watermark'] 
         musik = data['music_url']  
-        sumber = data['aweme_id']
+        sumber = message.text[21:]
     # kirim video
         namaFile = f"{message.from_user.first_name}_{sumber}.mp4"
         namaFileMusik = f"{data['music_author']}.mp3"
