@@ -145,39 +145,106 @@ def downloadvidtiktok(message):
 # FULL STORY downloader
 @bot.message_handler(commands=['igs'])
 def downloadvidtiktok(message):
-        bot.send_chat_action(message.chat.id, "upload_video")
+        
      # cari id dari username
-        url = "https://instagram-stories1.p.rapidapi.com/v1/get_user_id"
-        querystring = {"username":message.text[5:]}
-        headers = {
-            'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
-            'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
-            }
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        dataID = json.loads(response.text)
-        id = dataID["user_id"]
+        try:
+            url = "https://instagram-stories1.p.rapidapi.com/v1/get_user_id"
+            querystring = {"username":message.text[5:]}
+            headers = {
+                'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
+                'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
+                }
+            response = requests.request("GET", url, headers=headers, params=querystring)
+            dataID = json.loads(response.text)
+            id = dataID["user_id"]
+        except:
+            bot.send_message(message.chat.id, "server sedang sibuk, coba beberapa saat lagi!")
 
      # cari story
-        url = "https://instagram-stories1.p.rapidapi.com/v2/user_stories"
-        querystring = {"userid":id} # cari id dengan API
-        headers = {
-            'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
-            'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
-            }
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        data = json.loads(response.text)
-        data = data['downloadLinks']
+        try:
+            url = "https://instagram-stories1.p.rapidapi.com/v2/user_stories"
+            querystring = {"userid":id} # cari id dengan API
+            headers = {
+                'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
+                'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
+                }
+            response = requests.request("GET", url, headers=headers, params=querystring)
+            data = json.loads(response.text)
+            data = data['downloadLinks']
+        except:
+            bot.send_message(message.chat.id, "maaf, username tidak ditemukan!")     
 
      # unduh story
         for i in range(0, int(len(data))):
-            namaFile = f"{message.text[5:]}_{i}.mp4"
-            snap = data[i]["url"]
-            unduhVideo(snap, namaFile)
-            kirimVideo(namaFile, message.chat.id)
+            if data[i]["mediaType"] == "video":
+                bot.send_chat_action(message.chat.id, "upload_video")
+                namaFile = f"{message.text[5:]}_{i}.mp4"
+                snap = data[i]["url"]
+                unduhVideo(snap, namaFile)
+                kirimVideo(namaFile, message.chat.id)
+
+            else:
+                bot.send_chat_action(message.chat.id, "upload_photo")
+                namaFile = f"{message.text[5:]}_{i}.jpg"
+                snap = data[i]["url"]
+                unduhVideo(snap, namaFile)
+                kirimFoto(namaFile, message.chat.id)
 
         bot.send_message(message.chat.id, f"total {len(data)} stories")
         log(message, f"IG STORY {message.text[5:]}")
 
+# # PARTIAL STORY downloader
+# @bot.message_handler(commands=['igp'])
+# def downloadvidtiktok(message):
+        
+#      # cari id dari username
+#         try:
+#             url = "https://instagram-stories1.p.rapidapi.com/v1/get_user_id"
+#             querystring = {"username":message.text[5:]}
+#             headers = {
+#                 'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
+#                 'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
+#                 }
+#             response = requests.request("GET", url, headers=headers, params=querystring)
+#             dataID = json.loads(response.text)
+#             id = dataID["user_id"]
+#         except:
+#             bot.send_message(message.chat.id, "server sedang sibuk, coba beberapa saat lagi!")
+
+#      # cari story
+#         try:
+#             url = "https://instagram-stories1.p.rapidapi.com/v2/user_stories"
+#             querystring = {"userid":id} # cari id dengan API
+#             headers = {
+#                 'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
+#                 'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
+#                 }
+#             response = requests.request("GET", url, headers=headers, params=querystring)
+#             data = json.loads(response.text)
+#         except:
+#             bot.send_message(message.chat.id, "maaf, username tidak ditemukan!")     
+        
+#      # unduh story
+#         partial = ( int(message.text.split(" ")[2]) - 1 )
+#         data = data['downloadLinks']
+#         jenis = data[partial]["mediaType"]
+
+#         if jenis == "video":
+#             bot.send_chat_action(message.chat.id, "upload_video")
+#             namaFile = f"{message.text[5:]}_{partial}.mp4"
+#             snap = data[partial]["url"]
+#             unduhVideo(snap, namaFile)
+#             kirimVideo(namaFile, message.chat.id)
+
+#         else:
+#             bot.send_chat_action(message.chat.id, "upload_photo")
+#             namaFile = f"{message.text[5:]}_{partial}.jpg"
+#             snap = data[partial]["url"]
+#             unduhVideo(snap, namaFile)
+#             kirimFoto(namaFile, message.chat.id)
+
+#         bot.send_message(message.chat.id, f"total {len(data)} stories")
+#         log(message, f"IG STORY {message.text[5:]}")
 
 """                             YOUTUBE DOWNLOADER                          """
 @bot.message_handler(regexp='https://www.youtube.com/')
