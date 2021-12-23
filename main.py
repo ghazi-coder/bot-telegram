@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import random
 #
 import os
-bot = telebot.TeleBot("1718369489:AAFurcwtMU-qped3oXaYMO1el0jCp5J6Qh8")
+bot = telebot.TeleBot("1857480052:AAGyNqGpLL7wQ1YiRN313ISiqy4lrcOs49w")
 
 
 def log(message, perintah):
