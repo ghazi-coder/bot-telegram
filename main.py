@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import random
 #
 import os
-bot = telebot.TeleBot("1857480052:AAGyNqGpLL7wQ1YiRN313ISiqy4lrcOs49w")
+bot = telebot.TeleBot("1718369489:AAFurcwtMU-qped3oXaYMO1el0jCp5J6Qh8")
 
 
 def log(message, perintah):
@@ -194,15 +194,46 @@ def downloadvidtiktok(message):
  # dapatkan data yang dibutuhkan
     thumb, channel = data['thumb'], data['author']
 
-    unduhVideo(data['link']['22'][0], f"{message.from_user.first_name}_{channel}.mp4")
-    kirimVideo(f"{message.from_user.first_name}_{channel}.mp4", message.chat.id)   
+    unduhVideo(data['link']['22'][0], f"{message.from_user.first_name}_{channel}.mp4") 
+    # kirimVideo(f"{message.from_user.first_name}_{channel}.mp4", message.chat.id)
 
+    # tampilkan button untuk mendownload musik
+    markup = types.InlineKeyboardMarkup()
+    item = types.InlineKeyboardButton(
+    'Download Sound 🎶', callback_data='download musik youtube')
+    markup.row(item)
+    # kirim video
+    while True:
+            try:
+              out = open(f"{message.from_user.first_name}_{channel}.mp4", 'rb')
+              x = bot.send_video(message.chat.id, out, reply_markup=markup)
+              out.close()
+              if x is not EOFError:
+                break
+            except:
+              continue
     log(message, f"DOWNLOAD VIDEO YT {channel}")
-#kirim video yang dipilih
-    # kirimVideoYoutube(message, data['link']['17'][0], f"{message.from_user.first_name}_{channel}.mp4", "download video youtube 144p")
-    # kirimVideoYoutube(message, data['link']['18'][0], f"{message.from_user.first_name}_{channel}.mp4", "download video youtube 360p")
-    # kirimVideoYoutube(message, data['link']['22'][0], f"{message.from_user.first_name}_{channel}.mp4", "download video youtube 720p")
+ 
 
+    url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=b9b38e428d49")
+    data = url.json()
+
+ # kirim musik ketika diclick tombol
+    @bot.callback_query_handler(func=lambda call: True)
+    def callbacks(call):
+        bot.send_chat_action(message.chat.id, "upload_audio")
+        if call.data == "download musik youtube":
+            # doenload musik
+            page = requests.get(data['result']['url'])
+            with open(f"{message.from_user.first_name}_{channel}.mp3", 'wb') as file:
+                file.write(page.content)
+            # kirim musik
+            out = open(f"{message.from_user.first_name}_{channel}.mp3", 'rb')
+            bot.send_audio(message.chat.id, out)
+            out.close()
+            log(message, "DOWNLOAD SOUND YT {channel}")
+
+    
 
 
 
