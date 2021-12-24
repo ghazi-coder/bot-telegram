@@ -238,10 +238,10 @@ def downloadvidtiktok(message):
         # doenload musik
     page = requests.get(data['result']['url'])
     title = data['result']['title']
-    with open(f"{title}_{channel}.mp3", 'wb') as file:
+    with open(f"{title}.mp3", 'wb') as file:
         file.write(page.content)
     # kirim musik
-    out = open(f"{title}_{channel}.mp3", 'rb')
+    out = open(f"{title}.mp3", 'rb')
     bot.send_audio(message.chat.id, out)
     out.close()
     log(message, "DOWNLOAD MUSIK YT {title}")
