@@ -247,7 +247,7 @@ def downloadvidtiktok(message):
 #         log(message, f"IG STORY {message.text[5:]}")
 
 """                             YOUTUBE DOWNLOADER                          """
-@bot.message_handler(regexp='https://www.youtube.com/')
+@bot.message_handler(regexp='https://www.youtu.be/')
 def downloadvidtiktok(message):
     bot.send_chat_action(message.chat.id, "upload_video")
     url = "https://ytstream-download-youtube-videos.p.rapidapi.com/dl"
