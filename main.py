@@ -37,6 +37,7 @@ def unduhVideo(video, namaFile):
     with open(namaFile, 'wb') as file:
         file.write(page.content)
 
+
 def kirimVideo(namaFile, tujuan):
         while True:
             try:
@@ -122,6 +123,32 @@ def downloadvidtiktok(message):
 # VIDEO POST, REELS and TV downloader
 @bot.message_handler(regexp='https://www.instagram.com/')
 def downloadvidtiktok(message):
+    try:
+        bot.send_chat_action(message.chat.id, "upload_video")
+        url = requests.get(f"https://api.dapuhy.ga/api/socialmedia/igdownload?url={message.text}&apikey=qadrillah")
+        data = url.json()
+        video = data['result']["download_url"]
+
+        sumber = data["user"]["username"]
+        namaFile = f"{message.from_user.first_name}_{sumber}.mp4"
+
+    # download video
+        unduhVideo(video, namaFile)
+
+    # kirim video
+        while True:
+            try:
+                bot.send_chat_action(message.chat.id, "upload_video")
+                out = open(namaFile, 'rb')
+                x = bot.send_video(message.chat.id, out)
+                out.close()
+                if x is not EOFError:
+                    break
+            except:
+                continue
+        log(message, "IG DOWNLOADER 1")
+
+    except:
         bot.send_chat_action(message.chat.id, "upload_video")
         url = requests.get(f"https://zenzapi.xyz/api/downloader/instagram?url={message.text}&apikey=b9b38e428d49")
         data = url.json()
@@ -141,7 +168,8 @@ def downloadvidtiktok(message):
                 break
             except:
               continue
-        log(message, "IG DOWNLOADER")
+        log(message, "IG DOWNLOADER 2")
+               
 
 
 
@@ -205,9 +233,10 @@ def downloadvidtiktok(message):
 
 @bot.message_handler(regexp='youtu')
 def downloadvidtiktok(message):
-    url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=b9b38e428d49")
-    data = url.json()
 
+    url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=6301bfc9de")
+    data = url.json()
+    
     bot.send_chat_action(message.chat.id, "upload_audio")
         # doenload musik
     page = requests.get(data['result']['url'])
@@ -221,6 +250,95 @@ def downloadvidtiktok(message):
     out.close()
     log(message, "DOWNLOAD MUSIK YT {title}")
 
+
+"""
+                                   JOOX DOWNLOADER                         
+"""
+
+@bot.message_handler(commands=['joox'])
+def downloadvidtiktok(message):
+    url = requests.get(f"https://zenzapi.xyz/api/downloader/joox?query={message.text.split(' ')[1:]}&apikey=b9b38e428d49")
+    data = url.json()
+
+    bot.send_chat_action(message.chat.id, "upload_audio")
+    
+        # doenload musik
+    page = requests.get(data['result']['mp3Link'])
+    lagu = data['result']['lagu']
+
+    with open(f"{lagu}.mp3", 'wb') as file:
+        file.write(page.content)
+         # tampilkan button untuk mendownload musik
+    markup = types.InlineKeyboardMarkup()
+    item = types.InlineKeyboardButton(
+    'informasi lagu', callback_data='joox')
+    markup.row(item)
+     # kirim video
+        
+    while True:
+        try:
+            # kirim musik
+            out = open(f"{lagu}.mp3", 'rb')
+            bot.send_chat_action(message.chat.id, "upload_audio")
+            x = bot.send_audio(message.chat.id, out, reply_markup=markup)
+            out.close()
+            if x is not EOFError:
+                break
+        except:
+            continue
+        
+    log(message, f"DOWNLOAD MUSIK JOOX {lagu}")
+# kirim musik ketika diclick tombol
+    @bot.callback_query_handler(func=lambda call: True)
+    def callbacks(call):
+        bot.send_chat_action(message.chat.id, "upload_photo")
+        if call.data == "joox":
+            unduhVideo(data['result']['img'], f"{lagu}.jpg")
+            kirimFoto(f"{lagu}.jpg", message.chat.id)
+            bot.send_chat_action(message.chat.id, "typing")
+            bot.send_message(message.chat.id, f"judul lagu : {lagu}\nalbum : {data['result']['album']}\npenyanyi : {data['result']['penyanyi']}\npublish : {data['result']['publish']}" )
+            bot.send_message(message.chat.id, f"{data['lirik']['result']}" )
+            
+            log(message, f"informasi lagu {lagu}")
+
+
+"""                             TWITTER DOWNLOADER                                    """
+# VIDEO POST, REELS and TV downloader
+@bot.message_handler(regexp='https://twitter.com')
+def downloadvidtiktok(message):
+
+    bot.send_chat_action(message.chat.id, "upload_video")
+    i = 0
+    api_key = "b9b38e428d49"
+    while True:
+        # key = ["b9b38e428d49", "6301bfc9de"] 
+        url = requests.get(f"https://zenzapi.xyz/api/downloader/twitter?url={message.text.split('?')[0]}&apikey={api_key}")
+        data = url.json()
+        print(data['status']) #key = "6301bfc9de"
+
+        if data['status'] == False:
+            api_key = "6301bfc9de"
+            print('disini')
+        elif data['status'] == "OK":
+            break
+
+    video = data['result']['HD']        
+
+    namaFile = f"{message.from_user.first_name}_twitter.mp4"
+# download video
+    unduhVideo(video, namaFile)
+# kirim video
+    while True:
+        try:
+            bot.send_chat_action(message.chat.id, "upload_video")
+            out = open(namaFile, 'rb')
+            x = bot.send_video(message.chat.id, out)
+            out.close()
+            if x is not EOFError:
+                 break
+        except:
+            continue
+    log(message, "TWITTER DOWNLOADER")
 
 
 
