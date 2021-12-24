@@ -192,7 +192,7 @@ def downloadPostIG(message):
         log(message, "IG DOWNLOADER 1")
 
     except:
-        i = len(api_key-1)
+        i = len(api_key)-1
         while True:
             bot.send_chat_action(message.chat.id, "upload_video")
             url = requests.get(f"https://zenzapi.xyz/api/downloader/instagram?url={message.text}&apikey={api_key[i]}")
