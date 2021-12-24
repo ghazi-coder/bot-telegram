@@ -229,19 +229,8 @@ def downloadvidtiktok(message):
                                    YOUTUBE MUSIK DOWNLOADER                         
 """
 
-@bot.message_handler(regexp='https://www.youtu')
+@bot.message_handler(regexp='youtu')
 def downloadvidtiktok(message):
-    url = "https://ytstream-download-youtube-videos.p.rapidapi.com/dl"
-    querystring = {"id":message.text[32:],"geo":"DE"}
-    headers = {
-        'x-rapidapi-host': "ytstream-download-youtube-videos.p.rapidapi.com",
-        'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
-        }
-    response = requests.request("GET", url, headers=headers, params=querystring)
-    data = json.loads(response.text)
- # dapatkan data yang dibutuhkan
-    channel = data['author']
-
     url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=b9b38e428d49")
     data = url.json()
 
@@ -255,7 +244,7 @@ def downloadvidtiktok(message):
     out = open(f"{title}_{channel}.mp3", 'rb')
     bot.send_audio(message.chat.id, out)
     out.close()
-    log(message, "DOWNLOAD MUSIK YT {channel}")
+    log(message, "DOWNLOAD MUSIK YT {title}")
 
 
 
