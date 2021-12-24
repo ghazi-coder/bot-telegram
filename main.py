@@ -15,7 +15,6 @@ import random
 #
 import os
 bot = telebot.TeleBot("1857480052:AAGyNqGpLL7wQ1YiRN313ISiqy4lrcOs49w")
-
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H')  # : %M : %S'
@@ -66,6 +65,51 @@ def kirimVideoYoutube(message, url, namaFile, action):
              # doenload video
                 unduhVideo(url, namaFile)
                 kirimVideo(namaFile, message.chat.id)
+
+@bot.message_handler(commands=['start'])
+def downloadvidtiktok(message):
+
+    bot.send_message(message.chat.id, 
+f'''Halo {message.from_user.first_name}  
+Perkenalkan saya Downloader_bot yang akan membantu anda mengunduh konten social media, berikut command yang tersedia :
+
+1️⃣ Tiktok
+1. download video tiktok nowm = paste url di chat 
+unduh musik click button `Download Musik 🎶`
+
+2️⃣ Instagram
+1. download video post/reels/tv = paste url di chat
+2. download insta stories = /igs_username
+ex : /igs allailqadrillah_
+note : 'tidak perlu menggunakan @, dan username harus detail'
+
+3️⃣ Twitter
+1. download video twitter = paste url di chat
+
+4️⃣ Youtube
+1. download musik youtube = paste url di chat
+
+5️⃣ SoundCloud
+1. download musik soundCloud = paste url di chat 
+
+6️⃣ Joox
+1. download musik joox = /joox_judulLagu
+ex : /joox Alan Walker - Different World
+note : 'judul lagunya harus detail'
+
+
+
+''')
+# tampilkan button 
+    markup = types.InlineKeyboardMarkup()
+    item = types.InlineKeyboardButton(
+        'Message Developer 🧑🏻‍💻', url='https://telegram.me/Qadrillah')
+    markup.row(item)
+    bot.send_message(
+        message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
+
+    
+
 
 """                                 TIKTOK DOWNLOADER                                                   """
 
@@ -121,7 +165,7 @@ def downloadvidtiktok(message):
 """                             INSTAGRAM DOWNLOADER                                    """
 # VIDEO POST, REELS and TV downloader
 @bot.message_handler(regexp='https://www.instagram.com/')
-def downloadvidtiktok(message):
+def downloadPostIG(message):
     try:
         bot.send_chat_action(message.chat.id, "upload_video")
         url = requests.get(f"https://api.dapuhy.ga/api/socialmedia/igdownload?url={message.text}&apikey=qadrillah")
@@ -175,7 +219,7 @@ def downloadvidtiktok(message):
                 break
             except:
               continue
-        log(message, f"IG DOWNLOADER 2 - {i}")
+        log(message, "IG DOWNLOADER 2")
                
 
 
@@ -183,10 +227,9 @@ def downloadvidtiktok(message):
 # 
 # FULL STORY downloader
 @bot.message_handler(commands=['igs'])
-def downloadvidtiktok(message):
+def downloadStoriesIG(message):
         
      # cari id dari username
-        try:
             url = "https://instagram-stories1.p.rapidapi.com/v1/get_user_id"
             querystring = {"username":message.text[5:]}
             headers = {
@@ -196,51 +239,60 @@ def downloadvidtiktok(message):
             response = requests.request("GET", url, headers=headers, params=querystring)
             dataID = json.loads(response.text)
             id = dataID["user_id"]
-        except:
-            bot.send_message(message.chat.id, "server sedang sibuk, coba beberapa saat lagi!")
 
-     # cari story
-        try:
-            url = "https://instagram-stories1.p.rapidapi.com/v2/user_stories"
-            querystring = {"userid":id} # cari id dengan API
-            headers = {
-                'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
-                'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
-                }
-            response = requests.request("GET", url, headers=headers, params=querystring)
-            data = json.loads(response.text)
-            data = data['downloadLinks']
-        except:
-            bot.send_message(message.chat.id, "maaf, username tidak ditemukan!")     
 
-     # unduh story
-        for i in range(0, int(len(data))):
-            if data[i]["mediaType"] == "video":
-                bot.send_chat_action(message.chat.id, "upload_video")
-                namaFile = f"{message.text[5:]}_{i}.mp4"
-                snap = data[i]["url"]
-                unduhVideo(snap, namaFile)
-                kirimVideo(namaFile, message.chat.id)
+        # cari story
+            try:
+                url = "https://instagram-stories1.p.rapidapi.com/v2/user_stories"
+                querystring = {"userid":id} # cari id dengan API
+                headers = {
+                    'x-rapidapi-host': "instagram-stories1.p.rapidapi.com",
+                    'x-rapidapi-key': "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"
+                    }
+                response = requests.request("GET", url, headers=headers, params=querystring)
+                data = json.loads(response.text)
 
-            else:
-                bot.send_chat_action(message.chat.id, "upload_photo")
-                namaFile = f"{message.text[5:]}_{i}.jpg"
-                snap = data[i]["url"]
-                unduhVideo(snap, namaFile)
-                kirimFoto(namaFile, message.chat.id)
+                if data['status'] == 'Fail':
+                   bot.send_message(message.chat.id, "user tidak memiliki stories!")
+                   
+                else:  
+                # unduh story
+                   data = data['downloadLinks']
+                   for i in range(0, int(len(data))):
+                        if data[i]["mediaType"] == "video":
+                            bot.send_chat_action(message.chat.id, "upload_video")
+                            namaFile = f"{message.text[5:]}_{i}.mp4"
+                            snap = data[i]["url"]
+                            unduhVideo(snap, namaFile)
+                            kirimVideo(namaFile, message.chat.id)
 
-        bot.send_message(message.chat.id, f"total {len(data)} stories")
-        log(message, f"IG STORY {message.text[5:]}")
+                        else:
+                            bot.send_chat_action(message.chat.id, "upload_photo")
+                            namaFile = f"{message.text[5:]}_{i}.jpg"
+                            snap = data[i]["url"]
+                            unduhVideo(snap, namaFile)
+                            kirimFoto(namaFile, message.chat.id)
+
+                   bot.send_message(message.chat.id, f"total {len(data)} stories")
+                   log(message, f"IG STORY {message.text[5:]}")
+
+            except:
+                bot.send_message(message.chat.id, "maaf, username tidak ditemukan!")     
+
+
+        
+
+
 
 
 
 """
                                    YOUTUBE MUSIK DOWNLOADER                         
 """
-api_key = ["b9b38e428d49", "6301bfc9de"] 
+api_key = ["b9b38e428d49", "6301bfc9de", "f64a95d64260", "879b62e71cdf"] 
 
 @bot.message_handler(regexp='youtu')
-def downloadvidtiktok(message):
+def downloadMusikYoutube(message):
     i = 0
     while True:
         bot.send_chat_action(message.chat.id, "upload_audio")
@@ -273,7 +325,7 @@ def downloadvidtiktok(message):
 """
 
 @bot.message_handler(commands=['joox'])
-def downloadvidtiktok(message):
+def downloadjoox(message):
 # ambil api key yang tidak kadaluarsa 
     i = 0
     while True:
@@ -325,44 +377,84 @@ def downloadvidtiktok(message):
             
             log(message, f"informasi lagu {lagu} {i}")
 
+""" SOUND CLOUND DOWNLOADER
+"""
+@bot.message_handler(regexp='https://soundcloud.com/')
+def downloadjoox(message):
+    try:
+    # ambil api key yang tidak kadaluarsa 
+        i = 0
+        while True:
+            bot.send_chat_action(message.chat.id, "upload_audio")
+            url = requests.get(f"https://zenzapi.xyz/api/downloader/soundcloud?url={message.text.split('?')[0]}&apikey={api_key[i]}")
+            data = url.json()
+            print(message.text.split('?')[0])
+
+            if data['status'] == False:
+                i += 1
+            elif data['status'] == "OK":
+                break
+        
+            # doenload musik
+        page = requests.get(data['result']['url'])
+        lagu = data['result']['title']
+
+        with open(f"{lagu}.mp3", 'wb') as file:
+            file.write(page.content)
+        
+        while True:
+            try:
+                # kirim musik
+                out = open(f"{lagu}.mp3", 'rb')
+                bot.send_chat_action(message.chat.id, "upload_audio")
+                x = bot.send_audio(message.chat.id, out)
+                out.close()
+                if x is not EOFError:
+                    break
+            except:
+                continue
+        log(message, f"SOUND CLOUD DOWNLOADER {i}")
+    except:
+        bot.send_message(message.chat.id, "musik tidak ditemukan!")
+   
 
 """                             TWITTER DOWNLOADER                                    """
 # VIDEO POST, REELS and TV downloader
 @bot.message_handler(regexp='https://twitter.com')
 def downloadvidtiktok(message):
-
-    bot.send_chat_action(message.chat.id, "upload_video")
-# ambil apikey satu persatu 
-    i = 0
-    while True:
-        url = requests.get(f"https://zenzapi.xyz/api/downloader/twitter?url={message.text.split('?')[0]}&apikey={api_key[i]}")
-        data = url.json()
-
-
-        if data['status'] == False:
-            i += 1
-        elif data['status'] == "OK":
-            break
-
-    video = data['result']['HD']        
-
-    namaFile = f"{message.from_user.first_name}_twitter.mp4"
-# download video
-    unduhVideo(video, namaFile)
-# kirim video
-    while True:
-        try:
-            bot.send_chat_action(message.chat.id, "upload_video")
-            out = open(namaFile, 'rb')
-            x = bot.send_video(message.chat.id, out)
-            out.close()
-            if x is not EOFError:
-                 break
-        except:
-            continue
-    log(message, f"TWITTER DOWNLOADER {i}")
+    try :
+        bot.send_chat_action(message.chat.id, "upload_video")
+    # ambil apikey satu persatu 
+        i = 0
+        while True:
+            url = requests.get(f"https://zenzapi.xyz/api/downloader/twitter?url={message.text.split('?')[0]}&apikey={api_key[i]}")
+            data = url.json()
 
 
+            if data['status'] == False:
+                i += 1
+            elif data['status'] == "OK":
+                break
+
+        video = data['result']['HD']        
+
+        namaFile = f"{message.from_user.first_name}_twitter.mp4"
+    # download video
+        unduhVideo(video, namaFile)
+    # kirim video
+        while True:
+            try:
+                bot.send_chat_action(message.chat.id, "upload_video")
+                out = open(namaFile, 'rb')
+                x = bot.send_video(message.chat.id, out)
+                out.close()
+                if x is not EOFError:
+                    break
+            except:
+                continue
+        log(message, f"TWITTER DOWNLOADER {i}")
+    except:
+        bot.send_message(message.chat.id, "Video tidak ditemukan!")
 
 
 
