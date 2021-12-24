@@ -240,7 +240,7 @@ def downloadvidtiktok(message):
     response = requests.request("GET", url, headers=headers, params=querystring)
     data = json.loads(response.text)
  # dapatkan data yang dibutuhkan
-    channel = data['thumb'], data['author']
+    channel = data['author']
 
     url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=b9b38e428d49")
     data = url.json()
