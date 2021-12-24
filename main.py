@@ -89,8 +89,10 @@ def downloadvidtiktok(message):
         'Download Musik 🎶', callback_data='download musik tiktok')
         markup.row(item)
      # kirim video
+        
         while True:
             try:
+              bot.send_chat_action(message.chat.id, "upload_video")
               out = open(namaFile, 'rb')
               x = bot.send_video(message.chat.id, out, reply_markup=markup)
               out.close()
@@ -126,48 +128,20 @@ def downloadvidtiktok(message):
         video = data['result']["link"]
         sumber = data["result"]["caption"]["username"]
         namaFile = f"{message.from_user.first_name}_{sumber}.mp4"
-
     # download video
         unduhVideo(video, namaFile)
-
-        markup = types.InlineKeyboardMarkup()
-        item = types.InlineKeyboardButton(
-        'informasi postingan', callback_data='informasi post')
-        markup.row(item)
-
     # kirim video
         while True:
             try:
+              bot.send_chat_action(message.chat.id, "upload_video")
               out = open(namaFile, 'rb')
-              x = bot.send_video(message.chat.id, out, reply_markup=markup)
+              x = bot.send_video(message.chat.id, out)
               out.close()
               if x is not EOFError:
                 break
             except:
               continue
         log(message, "IG DOWNLOADER")
-
-        # dapatkan data informasi post
-        like = data["result"]["caption"]["total_like"]
-        comment = data["result"]["caption"]["total_comment"]
-        desc = data["result"]["caption"]["desc"]
-
-        # kirim informasi post ketika diclick tombol
-        @bot.callback_query_handler(func=lambda call: True)
-        def callbacks(call):
-            bot.send_chat_action(message.chat.id, "typing")
-            if call.data == "informasi post":
-             # download gambar
-                page = requests.get(data['result']["link_two"])
-                with open(f"{message.from_user.first_name}_{sumber}.jpg", 'wb') as file:
-                    file.write(page.content)
-             # kirim musik
-                out = open(f"{message.from_user.first_name}_{sumber}.jpg", 'rb')
-                bot.send_photo(message.chat.id, out)
-                out.close()
-                bot.send_message(message.chat.id, f"username : {sumber}\nlike : {like}\ncomment : {comment}\ndesc : {desc}")
-
-                log(message, "informasi postingan")
 
 
 
@@ -242,6 +216,7 @@ def downloadvidtiktok(message):
         file.write(page.content)
     # kirim musik
     out = open(f"{title}.mp3", 'rb')
+    bot.send_chat_action(message.chat.id, "upload_audio")
     bot.send_audio(message.chat.id, out)
     out.close()
     log(message, "DOWNLOAD MUSIK YT {title}")
