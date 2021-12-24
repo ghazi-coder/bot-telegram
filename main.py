@@ -16,7 +16,6 @@ import random
 import os
 bot = telebot.TeleBot("1857480052:AAGyNqGpLL7wQ1YiRN313ISiqy4lrcOs49w")
 
-
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H')  # : %M : %S'
@@ -149,9 +148,17 @@ def downloadvidtiktok(message):
         log(message, "IG DOWNLOADER 1")
 
     except:
-        bot.send_chat_action(message.chat.id, "upload_video")
-        url = requests.get(f"https://zenzapi.xyz/api/downloader/instagram?url={message.text}&apikey=b9b38e428d49")
-        data = url.json()
+        i = len(api_key-1)
+        while True:
+            bot.send_chat_action(message.chat.id, "upload_video")
+            url = requests.get(f"https://zenzapi.xyz/api/downloader/instagram?url={message.text}&apikey={api_key[i]}")
+            data = url.json()
+
+            if data['status'] == False:
+                i -= 1
+            elif data['status'] == "OK":
+                break
+
         video = data['result']["link"]
         sumber = data["result"]["caption"]["username"]
         namaFile = f"{message.from_user.first_name}_{sumber}.mp4"
@@ -168,7 +175,7 @@ def downloadvidtiktok(message):
                 break
             except:
               continue
-        log(message, "IG DOWNLOADER 2")
+        log(message, f"IG DOWNLOADER 2 - {i}")
                
 
 
@@ -230,10 +237,20 @@ def downloadvidtiktok(message):
 """
                                    YOUTUBE MUSIK DOWNLOADER                         
 """
+api_key = ["b9b38e428d49", "6301bfc9de"] 
 
 @bot.message_handler(regexp='youtu')
 def downloadvidtiktok(message):
+    i = 0
+    while True:
+        bot.send_chat_action(message.chat.id, "upload_audio")
+        url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey={api_key[i]}")
+        data = url.json()
 
+        if data['status'] == False:
+            i += 1
+        elif data['status'] == "OK":
+            break
     url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=6301bfc9de")
     data = url.json()
     
@@ -248,7 +265,7 @@ def downloadvidtiktok(message):
     bot.send_chat_action(message.chat.id, "upload_audio")
     bot.send_audio(message.chat.id, out)
     out.close()
-    log(message, "DOWNLOAD MUSIK YT {title}")
+    log(message,f"DOWNLOAD MUSIK YT {title} {i}")
 
 
 """
@@ -257,10 +274,17 @@ def downloadvidtiktok(message):
 
 @bot.message_handler(commands=['joox'])
 def downloadvidtiktok(message):
-    url = requests.get(f"https://zenzapi.xyz/api/downloader/joox?query={message.text.split(' ')[1:]}&apikey=b9b38e428d49")
-    data = url.json()
+# ambil api key yang tidak kadaluarsa 
+    i = 0
+    while True:
+        bot.send_chat_action(message.chat.id, "upload_audio")
+        url = requests.get(f"https://zenzapi.xyz/api/downloader/joox?query={message.text.split(' ')[1:]}&apikey={api_key[i]}")
+        data = url.json()
 
-    bot.send_chat_action(message.chat.id, "upload_audio")
+        if data['status'] == False:
+            i += 1
+        elif data['status'] == "OK":
+            break
     
         # doenload musik
     page = requests.get(data['result']['mp3Link'])
@@ -287,7 +311,7 @@ def downloadvidtiktok(message):
         except:
             continue
         
-    log(message, f"DOWNLOAD MUSIK JOOX {lagu}")
+    log(message, f"DOWNLOAD MUSIK JOOX {lagu} {i}")
 # kirim musik ketika diclick tombol
     @bot.callback_query_handler(func=lambda call: True)
     def callbacks(call):
@@ -299,7 +323,7 @@ def downloadvidtiktok(message):
             bot.send_message(message.chat.id, f"judul lagu : {lagu}\nalbum : {data['result']['album']}\npenyanyi : {data['result']['penyanyi']}\npublish : {data['result']['publish']}" )
             bot.send_message(message.chat.id, f"{data['lirik']['result']}" )
             
-            log(message, f"informasi lagu {lagu}")
+            log(message, f"informasi lagu {lagu} {i}")
 
 
 """                             TWITTER DOWNLOADER                                    """
@@ -308,17 +332,15 @@ def downloadvidtiktok(message):
 def downloadvidtiktok(message):
 
     bot.send_chat_action(message.chat.id, "upload_video")
+# ambil apikey satu persatu 
     i = 0
-    api_key = "b9b38e428d49"
     while True:
-        # key = ["b9b38e428d49", "6301bfc9de"] 
-        url = requests.get(f"https://zenzapi.xyz/api/downloader/twitter?url={message.text.split('?')[0]}&apikey={api_key}")
+        url = requests.get(f"https://zenzapi.xyz/api/downloader/twitter?url={message.text.split('?')[0]}&apikey={api_key[i]}")
         data = url.json()
-        print(data['status']) #key = "6301bfc9de"
+
 
         if data['status'] == False:
-            api_key = "6301bfc9de"
-            print('disini')
+            i += 1
         elif data['status'] == "OK":
             break
 
@@ -338,7 +360,8 @@ def downloadvidtiktok(message):
                  break
         except:
             continue
-    log(message, "TWITTER DOWNLOADER")
+    log(message, f"TWITTER DOWNLOADER {i}")
+
 
 
 
