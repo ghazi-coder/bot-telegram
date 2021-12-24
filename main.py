@@ -273,38 +273,40 @@ def downloadvidtiktok(message):
     item = types.InlineKeyboardButton(
     'Download Sound 🎶', callback_data='download musik youtube')
     markup.row(item)
+    
+    kirimVideo(f"{message.from_user.first_name}_{channel}.mp4", message.chat.id)
     # kirim video
-    while True:
-            try:
-              print("mengirim")
-              bot.send_chat_action(message.chat.id, "upload_video")
-              out = open(f"{message.from_user.first_name}_{channel}.mp4", 'rb')
-              x = bot.send_video(message.chat.id, out, reply_markup=markup)
-              out.close()
-              if x is not EOFError:
-                break
-            except:
-              continue
-    log(message, f"DOWNLOAD VIDEO YT {channel}")
+#     while True:
+#             try:
+#               print("mengirim")
+#               bot.send_chat_action(message.chat.id, "upload_video")
+#               out = open(f"{message.from_user.first_name}_{channel}.mp4", 'rb')
+#               x = bot.send_video(message.chat.id, out, reply_markup=markup)
+#               out.close()
+#               if x is not EOFError:
+#                 break
+#             except:
+#               continue
+#     log(message, f"DOWNLOAD VIDEO YT {channel}")
  
 
-    url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=b9b38e428d49")
-    data = url.json()
+#     url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=b9b38e428d49")
+#     data = url.json()
 
- # kirim musik ketika diclick tombol
-    @bot.callback_query_handler(func=lambda call: True)
-    def callbacks(call):
-        bot.send_chat_action(message.chat.id, "upload_audio")
-        if call.data == "download musik youtube":
-            # doenload musik
-            page = requests.get(data['result']['url'])
-            with open(f"{message.from_user.first_name}_{channel}.mp3", 'wb') as file:
-                file.write(page.content)
-            # kirim musik
-            out = open(f"{message.from_user.first_name}_{channel}.mp3", 'rb')
-            bot.send_audio(message.chat.id, out)
-            out.close()
-            log(message, "DOWNLOAD SOUND YT {channel}")
+#  # kirim musik ketika diclick tombol
+#     @bot.callback_query_handler(func=lambda call: True)
+#     def callbacks(call):
+#         bot.send_chat_action(message.chat.id, "upload_audio")
+#         if call.data == "download musik youtube":
+#             # doenload musik
+#             page = requests.get(data['result']['url'])
+#             with open(f"{message.from_user.first_name}_{channel}.mp3", 'wb') as file:
+#                 file.write(page.content)
+#             # kirim musik
+#             out = open(f"{message.from_user.first_name}_{channel}.mp3", 'rb')
+#             bot.send_audio(message.chat.id, out)
+#             out.close()
+#             log(message, "DOWNLOAD SOUND YT {channel}")
 
     
 
