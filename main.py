@@ -246,10 +246,14 @@ def downloadvidtiktok(message):
 #         bot.send_message(message.chat.id, f"total {len(data)} stories")
 #         log(message, f"IG STORY {message.text[5:]}")
 
-"""                             YOUTUBE DOWNLOADER                          """
-@bot.message_handler(regexp='https://www.youtu.be/')
+"""
+                                   YOUTUBE DOWNLOADER                         
+"""
+
+@bot.message_handler(regexp='https://www.youtu')
 def downloadvidtiktok(message):
     bot.send_chat_action(message.chat.id, "upload_video")
+    print("scrapper")
     url = "https://ytstream-download-youtube-videos.p.rapidapi.com/dl"
     querystring = {"id":message.text[32:],"geo":"DE"}
     headers = {
@@ -263,7 +267,7 @@ def downloadvidtiktok(message):
 
     unduhVideo(data['link']['22'][0], f"{message.from_user.first_name}_{channel}.mp4") 
     # kirimVideo(f"{message.from_user.first_name}_{channel}.mp4", message.chat.id)
-
+    print("video terunduh")
     # tampilkan button untuk mendownload musik
     markup = types.InlineKeyboardMarkup()
     item = types.InlineKeyboardButton(
@@ -272,8 +276,10 @@ def downloadvidtiktok(message):
     # kirim video
     while True:
             try:
+              print("mengirim")
+              bot.send_chat_action(message.chat.id, "upload_video")
               out = open(f"{message.from_user.first_name}_{channel}.mp4", 'rb')
-              x = bot.send_video(message.chat.id, out, reply_markup=markup)
+              x = bot.send_video(message.chat.id, out, reply_markup=markup, progress=progress)
               out.close()
               if x is not EOFError:
                 break
