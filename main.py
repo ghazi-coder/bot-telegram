@@ -279,7 +279,7 @@ def downloadvidtiktok(message):
               print("mengirim")
               bot.send_chat_action(message.chat.id, "upload_video")
               out = open(f"{message.from_user.first_name}_{channel}.mp4", 'rb')
-              x = bot.send_video(message.chat.id, out, reply_markup=markup, progress=progress)
+              x = bot.send_video(message.chat.id, out, reply_markup=markup)
               out.close()
               if x is not EOFError:
                 break
