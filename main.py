@@ -124,7 +124,9 @@ def downloadvidtiktok(message):
 
         namaFile = f"{message.from_user.first_name}_{sumber[3]}.mp4"
         namaFileMusik = f"{message.from_user.first_name}_{sumber[3]}.mp3"
-        del sumber
+        print(sumber)
+        print(namaFileMusik)
+        print(message.text)
     # download video
         unduhVideo(video, namaFile)
 
@@ -146,7 +148,7 @@ def downloadvidtiktok(message):
             except:
               continue
         
-        log(message, "Tiktok Video Downloader")
+        log(message, f"Tiktok Video Downloader {namaFile}")
     # kirim musik ketika diclick tombol
         @bot.callback_query_handler(func=lambda call: True)
         def callbacks(call):
