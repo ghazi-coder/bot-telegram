@@ -224,12 +224,15 @@ def downloadPostIG(message):
 
 
 
+
+rapidApi_key = ["f355e8c71bmsh2f12c8e8772a755p1aba64jsn14d36932fc37", "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"]
 # 
 # FULL STORY downloader
 @bot.message_handler(commands=['igs'])
 def downloadStoriesIG(message):
         
      # cari id dari username
+    try:
             url = "https://instagram-stories1.p.rapidapi.com/v1/get_user_id"
             querystring = {"username":message.text[5:]}
             headers = {
@@ -238,6 +241,7 @@ def downloadStoriesIG(message):
                 }
             response = requests.request("GET", url, headers=headers, params=querystring)
             dataID = json.loads(response.text)
+            print(dataID)
             id = dataID["user_id"]
 
 
@@ -278,6 +282,8 @@ def downloadStoriesIG(message):
 
             except:
                 bot.send_message(message.chat.id, "maaf, username tidak ditemukan!")     
+    except:
+            bot.send_message(message.chat.id, dataID['Warning'])     
 
 
         
