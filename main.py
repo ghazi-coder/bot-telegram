@@ -124,6 +124,7 @@ def downloadvidtiktok(message):
 
         namaFile = f"{message.from_user.first_name}_{sumber[3]}.mp4"
         namaFileMusik = f"{message.from_user.first_name}_{sumber[3]}.mp3"
+        del sumber
     # download video
         unduhVideo(video, namaFile)
 
