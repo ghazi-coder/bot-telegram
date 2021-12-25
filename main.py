@@ -233,6 +233,9 @@ def downloadStoriesIG(message):
         
      # cari id dari username
     try:
+
+            url = requests.get(f"https://zenzapi.xyz/api/downloader/ytmp3?url={message.text}&index=2&apikey=6301bfc9de")
+            data = url.json()
             url = "https://instagram-stories1.p.rapidapi.com/v1/get_user_id"
             querystring = {"username":message.text[5:]}
             headers = {
@@ -284,11 +287,7 @@ def downloadStoriesIG(message):
                 bot.send_message(message.chat.id, "maaf, username tidak ditemukan!")     
     except:
             bot.send_message(message.chat.id, dataID['Warning'])     
-
-
-        
-
-
+   
 
 
 
