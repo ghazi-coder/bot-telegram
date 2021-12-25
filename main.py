@@ -15,6 +15,14 @@ import random
 #
 import os
 bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
+
+def waktu():
+    jam = time.strftime('%H')  # : %M : %S'
+    jam = int(jam)+7
+    menit = int(time.strftime('%M'))  # : %S')#: %M : %S'
+    detik = int(time.strftime('%S'))
+    return f"{jam} : {menit} : {detik}"
+        
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H')  # : %M : %S'
@@ -133,7 +141,7 @@ def downloadvidtiktok(message):
      # tampilkan button untuk mendownload musik
         markup = types.InlineKeyboardMarkup()
         item = types.InlineKeyboardButton(
-        'Download Musik 🎶', callback_data='download musik tiktok')
+        'Download Musik 🎶', callback_data=f"download musik tiktok {waktu()}")
         markup.row(item)
      # kirim video
         
@@ -153,7 +161,7 @@ def downloadvidtiktok(message):
         @bot.callback_query_handler(func=lambda call: True)
         def callbacks(call):
             bot.send_chat_action(message.chat.id, "upload_audio")
-            if call.data == "download musik tiktok":
+            if call.data == f"download musik tiktok {waktu()}":
              # doenload musik
                 page = requests.get(musik)
                 with open(namaFileMusik, 'wb') as file:
