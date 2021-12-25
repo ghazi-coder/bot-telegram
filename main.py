@@ -137,14 +137,14 @@ def downloadvidtiktok(message):
         print(message.text)
     # download video
         unduhVideo(video, namaFile)
-
+        time = waktu()
      # tampilkan button untuk mendownload musik
         markup = types.InlineKeyboardMarkup()
         item = types.InlineKeyboardButton(
-        'Download Musik 🎶', callback_data=f"download musik tiktok {waktu()}")
+        'Download Musik 🎶', callback_data=f"download musik tiktok {time}")
         markup.row(item)
      # kirim video
-        
+        print(f"download musik tiktok {time}")
         while True:
             try:
               bot.send_chat_action(message.chat.id, "upload_video")
@@ -161,8 +161,9 @@ def downloadvidtiktok(message):
         @bot.callback_query_handler(func=lambda call: True)
         def callbacks(call):
             bot.send_chat_action(message.chat.id, "upload_audio")
-            if call.data == f"download musik tiktok {waktu()}":
+            if call.data == f"download musik tiktok {time}":
              # doenload musik
+                print(f"download musik tiktok {time}")
                 page = requests.get(musik)
                 with open(namaFileMusik, 'wb') as file:
                     file.write(page.content)
