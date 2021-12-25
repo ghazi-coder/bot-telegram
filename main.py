@@ -159,7 +159,8 @@ def downloadvidtiktok(message):
                 out = open(namaFileMusik, 'rb')
                 bot.send_audio(message.chat.id, out)
                 out.close()
-                log(message, "Tiktok Music Downloader")
+                os.remove(namaFileMusik)
+                log(message, f"Tiktok Music Downloader {namaFileMusik}")
 
 
 """                             INSTAGRAM DOWNLOADER                                    """
