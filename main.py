@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import random
 #
 import os
-bot = telebot.TeleBot("1857480052:AAGyNqGpLL7wQ1YiRN313ISiqy4lrcOs49w")
+bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H')  # : %M : %S'
