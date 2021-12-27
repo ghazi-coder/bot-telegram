@@ -16,13 +16,6 @@ import random
 import os
 bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
 
-def waktu():
-    jam = time.strftime('%H')  # : %M : %S'
-    jam = int(jam)+7
-    menit = int(time.strftime('%M'))  # : %S')#: %M : %S'
-    detik = int(time.strftime('%S'))
-    return f"{jam} : {menit} : {detik}"
-        
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H')  # : %M : %S'
@@ -65,14 +58,18 @@ def kirimFoto(namaFile, tujuan):
             except:
               continue
 
-def kirimVideoYoutube(message, url, namaFile, action):
-        @bot.callback_query_handler(func=lambda call: True)
-        def callbacks(call):
-            bot.send_chat_action(message.chat.id, "upload_video")
-            if call.data == action:
-             # doenload video
-                unduhVideo(url, namaFile)
-                kirimVideo(namaFile, message.chat.id)
+def kirimMusikMarkup(tujuan, namaFile, markup):
+    while True:
+        try:
+            # kirim musik
+            out = open(namaFile, 'rb')
+            bot.send_chat_action(tujuan, "upload_audio")
+            x = bot.send_audio(tujuan, namaFile, reply_markup=markup)
+            out.close()
+            if x is not EOFError:
+                break
+        except:
+            continue
 
 @bot.message_handler(commands=['start'])
 def downloadvidtiktok(message):
@@ -116,28 +113,60 @@ note : 'judul lagunya harus detail'
     bot.send_message(
         message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
 
-    
+def waktu():
+    tanggal = datetime.datetime.now()
+    tanggal = tanggal.strftime('%d-%B-%Y')
+    jam = time.strftime('%H')  # : %M : %S'
+    menit = int(time.strftime('%M'))  # : %S')#: %M : %S'
+    detik = int(time.strftime('%S'))
+    return f"{tanggal}{jam}{menit}{detik}"
 
+"""  CALLLBACKKK KETIKA BUTTON DI CLICK"""
+@bot.callback_query_handler(func=lambda call: True)
+def callbacksJoox(call):
+# ketika tombol informasi lagi JOOX click
+    if call.data == callJoox:
+    
+        bot.send_chat_action(call.message.chat.id, "upload_photo")
+        kirimFoto(f"{laguJoox}.jpg", call.message.chat.id)
+        bot.send_chat_action(call.message.chat.id, "typing")
+        bot.send_message(call.message.chat.id, f"judul lagu : {laguJoox}\nalbum : {dataJoox['result']['album']}\npenyanyi : {dataJoox['result']['penyanyi']}\npublish : {dataJoox['result']['publish']}" )
+        bot.send_message(call.message.chat.id, f"{dataJoox['lirik']['result']}" )
+        bot.edit_message_reply_markup()
+        log(call.message, f"informasi lagu {laguJoox} ")  
+
+
+    if call.data == callTiktok:
+        page = requests.get(musikTiktok)
+        with open(namaFileMusikTiktok, 'wb') as file:
+            file.write(page.content)
+        # kirim musik
+        out = open(namaFileMusikTiktok, 'rb')
+        bot.send_audio(call.message.chat.id, out)
+        out.close()
+        log(call.message, f"Tiktok Music Downloader {namaFileMusikTiktok}")
 
 """                                 TIKTOK DOWNLOADER                                                   """
 
 @bot.message_handler(regexp='https://vt.tiktok.com/')
 def downloadvidtiktok(message):
+        global callTiktok
+        global musikTiktok
+        global namaFileMusikTiktok
+
         bot.send_chat_action(message.chat.id, "upload_video")
         url = requests.get(f"https://api.dapuhy.ga/api/socialmedia/musical?url={message.text}&apikey=qadrillah")
         data = url.json()
         video = data['result']["mp4"]["server_1"]
-        musik = data['result']["mp3"]["server_1"] 
+        musikTiktok = data['result']["mp3"]["server_1"] 
         sumber = message.text.split('/')
 
+        callTiktok  = f'{sumber} {waktu()}'
         namaFile = f"{message.from_user.first_name}_{sumber[3]}.mp4"
-        namaFileMusik = f"{message.from_user.first_name}_{sumber[3]}.mp3"
-        print(sumber)
-        print(namaFileMusik)
-        print(message.text)
+        namaFileMusikTiktok = f"{message.from_user.first_name}_{sumber[3]}.mp3"
     # download video
         unduhVideo(video, namaFile)
-        time = waktu()
+
      # tampilkan button untuk mendownload musik
         markup = types.InlineKeyboardMarkup()
         item = types.InlineKeyboardButton(
@@ -158,21 +187,7 @@ def downloadvidtiktok(message):
         
         log(message, f"Tiktok Video Downloader {namaFile}")
     # kirim musik ketika diclick tombol
-        @bot.callback_query_handler(func=lambda call: True)
-        def callbacks(call):
-            bot.send_chat_action(message.chat.id, "upload_audio")
-            if call.data == f"download musik tiktok {time}":
-             # doenload musik
-                print(f"download musik tiktok {time}")
-                page = requests.get(musik)
-                with open(namaFileMusik, 'wb') as file:
-                    file.write(page.content)
-             # kirim musik
-                out = open(namaFileMusik, 'rb')
-                bot.send_audio(message.chat.id, out)
-                out.close()
-                os.remove(namaFileMusik)
-                log(message, f"Tiktok Music Downloader {namaFileMusik}")
+
 
 
 """                             INSTAGRAM DOWNLOADER                                    """
@@ -205,7 +220,7 @@ def downloadPostIG(message):
         log(message, "IG DOWNLOADER 1")
 
     except:
-        i = len(api_key)-1
+        i = len(api_key-1)
         while True:
             bot.send_chat_action(message.chat.id, "upload_video")
             url = requests.get(f"https://zenzapi.xyz/api/downloader/instagram?url={message.text}&apikey={api_key[i]}")
@@ -234,8 +249,6 @@ def downloadPostIG(message):
               continue
         log(message, "IG DOWNLOADER 2")
                
-
-
 
 
 rapidApi_key = ["f355e8c71bmsh2f12c8e8772a755p1aba64jsn14d36932fc37", "c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c"]
@@ -299,15 +312,63 @@ def downloadStoriesIG(message):
             except:
                 bot.send_message(message.chat.id, "maaf, username tidak ditemukan!")     
     except:
-            bot.send_message(message.chat.id, dataID['Warning'])     
-   
+            bot.send_message(message.chat.id, dataID['Warning'])    
+
+api_key = ["b9b38e428d49", "6301bfc9de", "f64a95d64260", "879b62e71cdf"] 
+@bot.message_handler(commands=['joox'])
+def downloadjoox(message):
+# ambil api key yang tidak kadaluarsa 
+    i = 0
+    global dataJoox
+    global laguJoox
+    global waktuJoox
+    global callJoox
+
+    while True:
+        bot.send_chat_action(message.chat.id, "upload_audio")
+        url = requests.get(f"https://zenzapi.xyz/api/downloader/joox?query={message.text.split(' ')[1:]}&apikey={api_key[i]}")
+        dataJoox = url.json()
+
+        if dataJoox['status'] == False:
+            i += 1
+        elif dataJoox['status'] == "OK":
+            break
+
+    page = requests.get(dataJoox['result']['mp3Link'])
+    laguJoox = dataJoox['result']['lagu']
+    waktuJoox = waktu()
+    callJoox  = f'joox {laguJoox} {waktuJoox}'
+    with open(f"{laguJoox}.mp3", 'wb') as file:
+        file.write(page.content)
+
+#tampilkan button untuk mendownload musik
+    markup = types.InlineKeyboardMarkup()
+    item = types.InlineKeyboardButton(
+    f'informasi lagu {laguJoox}', callback_data= callJoox)
+    markup.row(item)
+
+    while True:
+        try:
+            # kirim musik
+            out = open(f"{laguJoox}.mp3", 'rb')
+            bot.send_chat_action(message.chat.id, "upload_audio")
+            x = bot.send_audio(message.chat.id, out, reply_markup=markup)
+            out.close()
+            if x is not EOFError:
+                break
+        except:
+            continue
+
+    log(message, f"DOWNLOAD MUSIK JOOX {laguJoox} {i}")
+    unduhVideo(dataJoox['result']['img'], f"{laguJoox}.jpg")
+  
 
 
 
 """
                                    YOUTUBE MUSIK DOWNLOADER                         
 """
-api_key = ["b9b38e428d49", "6301bfc9de", "f64a95d64260", "879b62e71cdf"] 
+
 
 @bot.message_handler(regexp='youtu')
 def downloadMusikYoutube(message):
@@ -337,63 +398,6 @@ def downloadMusikYoutube(message):
     out.close()
     log(message,f"DOWNLOAD MUSIK YT {title} {i}")
 
-
-"""
-                                   JOOX DOWNLOADER                         
-"""
-
-@bot.message_handler(commands=['joox'])
-def downloadjoox(message):
-# ambil api key yang tidak kadaluarsa 
-    i = 0
-    while True:
-        bot.send_chat_action(message.chat.id, "upload_audio")
-        url = requests.get(f"https://zenzapi.xyz/api/downloader/joox?query={message.text.split(' ')[1:]}&apikey={api_key[i]}")
-        data = url.json()
-
-        if data['status'] == False:
-            i += 1
-        elif data['status'] == "OK":
-            break
-    
-        # doenload musik
-    page = requests.get(data['result']['mp3Link'])
-    lagu = data['result']['lagu']
-
-    with open(f"{lagu}.mp3", 'wb') as file:
-        file.write(page.content)
-         # tampilkan button untuk mendownload musik
-    markup = types.InlineKeyboardMarkup()
-    item = types.InlineKeyboardButton(
-    'informasi lagu', callback_data='joox')
-    markup.row(item)
-     # kirim video
-        
-    while True:
-        try:
-            # kirim musik
-            out = open(f"{lagu}.mp3", 'rb')
-            bot.send_chat_action(message.chat.id, "upload_audio")
-            x = bot.send_audio(message.chat.id, out, reply_markup=markup)
-            out.close()
-            if x is not EOFError:
-                break
-        except:
-            continue
-        
-    log(message, f"DOWNLOAD MUSIK JOOX {lagu} {i}")
-# kirim musik ketika diclick tombol
-    @bot.callback_query_handler(func=lambda call: True)
-    def callbacks(call):
-        bot.send_chat_action(message.chat.id, "upload_photo")
-        if call.data == "joox":
-            unduhVideo(data['result']['img'], f"{lagu}.jpg")
-            kirimFoto(f"{lagu}.jpg", message.chat.id)
-            bot.send_chat_action(message.chat.id, "typing")
-            bot.send_message(message.chat.id, f"judul lagu : {lagu}\nalbum : {data['result']['album']}\npenyanyi : {data['result']['penyanyi']}\npublish : {data['result']['publish']}" )
-            bot.send_message(message.chat.id, f"{data['lirik']['result']}" )
-            
-            log(message, f"informasi lagu {lagu} {i}")
 
 """ SOUND CLOUND DOWNLOADER
 """
@@ -474,8 +478,5 @@ def downloadvidtiktok(message):
     except:
         bot.send_message(message.chat.id, "Video tidak ditemukan!")
 
-
-
-
 print("bot running...!!!")
-bot.polling()       
+bot.polling()   
