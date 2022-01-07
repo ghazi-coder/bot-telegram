@@ -123,7 +123,7 @@ def callbacksJoox(call):
         if call.data in callbackTiktok:
             bot.send_chat_action(call.from_user.id, "upload_audio")
             print(f"{call.data}.mp3")
-            bot.send_audio(call.from_user.id, f"{call.data}.mp3")
+            bot.send_audio(call.from_user.id, open(f"{call.data}.mp3", 'rb'))
 
 # key ZENZAPI
 api_key = ["b9b38e428d49", "6301bfc9de", "f64a95d64260", "879b62e71cdf"] 
@@ -152,9 +152,10 @@ def downloadvidtiktok(message):
         markup = markupVideo(f'Download Musik 🎶', file)
         callbackTiktok.append(file)
         # kirim video dan button untuk mendownload musik
-        bot.send_video(message.chat.id, f"{file}.mp4", reply_markup=markup)
-      
+        bot.send_video(message.chat.id, open(f"{file}.mp4", 'rb'), reply_markup=markup)
 
+        log(message, f"TIKTOK VID - {i}")
+      
 
 
 
