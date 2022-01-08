@@ -97,6 +97,7 @@ note : 'judul lagunya harus detail'
     markup.row(item)
     bot.send_message(
         message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
+    log(message, "start")
 
 
 
