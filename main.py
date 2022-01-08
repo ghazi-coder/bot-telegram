@@ -213,6 +213,9 @@ def downloadvidinstagram(message):
 # FULL STORY downloader
 @bot.message_handler(commands=['igs'])
 def downloadStoriesIG(message):
+# FULL STORY downloader
+@bot.message_handler(commands=['igs'])
+def downloadStoriesIG(message):
      # cari id dari username
         try:   # eror username
             key = 0
@@ -242,7 +245,7 @@ def downloadStoriesIG(message):
                     'x-rapidapi-key': api2[key] }
                 response = requests.request("GET", url, headers=headers, params=querystring)
                 data = json.loads(response.text)
-                print(data)
+    
 
                 if data['status'] == 'Fail': # kirim pesan untuk setiap warning
                     bot.send_message(message.chat.id, data['Warning'])
