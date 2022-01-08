@@ -29,7 +29,7 @@ def log(message, perintah):
     nama = message.from_user.first_name
     nama_akhir = message.from_user.last_name
     #TAMBAHKAN TEXT KE FILE .txt
-    text = f"{tanggal} > {waktu} > {nama} {nama_akhir} < {perintah} "
+    text = f"{tanggal} > {waktu} > {nama} {nama_akhir} < {perintah} " 
     print(text)
 
 def getData(link):          # dapatkan data dari api 
