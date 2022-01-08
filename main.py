@@ -29,7 +29,7 @@ def log(message, perintah):
     nama = message.from_user.first_name
     nama_akhir = message.from_user.last_name
     #TAMBAHKAN TEXT KE FILE .txt
-    text = f"{tanggal} > {waktu} > {nama} {nama_akhir} < {perintah} " 
+    text = f"{tanggal} > {waktu} > {nama} {nama_akhir} < {perintah} "
     print(text)
 
 def getData(link):          # dapatkan data dari api 
@@ -97,7 +97,6 @@ note : 'judul lagunya harus detail'
     markup.row(item)
     bot.send_message(
         message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
-    log(message, "start")
 
 
 
@@ -187,6 +186,7 @@ def downloadvidinstagram(message):
     key = len(api2) - 1
     while True: # ambil api key yang masih berlaku
         try:     
+          
             bot.send_chat_action(message.chat.id, "upload_video")
             url = "https://instagram47.p.rapidapi.com/post_details"
             querystring = {"shortcode": message.text.split('/')[len(message.text.split('/')) - 2]} 
@@ -196,10 +196,13 @@ def downloadvidinstagram(message):
             }
             response = requests.request(
                 "GET", url, headers=headers, params=querystring)
+                
             data = json.loads(response.text)
             if data['status'] == "Success":
                 urlVideo = data['body']['video_url'] 
                 break
+            else:
+                bot.send_message(message.chat.id, "tidak dapat mengunduh konten image/konten berslide!")
         except:
             key -= 1
             continue
@@ -285,18 +288,19 @@ callbackJoox = []
 @bot.message_handler(commands=['joox'])
 def downloadjoox(message):
 # ambil api key yang tidak kadaluarsa 
+
     try:
         i = 0
         while True:
             bot.send_chat_action(message.chat.id, "upload_audio")
-            url = requests.get(f"https://zenzapi.xyz/downloader/joox?query={message.text.split(' ')[1:]}&apikey={api_key[i]}")
+            url = requests.get(f"https://zenzapi.xyz/downloader/joox?query={message.text[6:]}&apikey={api_key[i]}")
             dataJoox = url.json()
 
             if dataJoox['status'] == False:
                 i += 1
             elif dataJoox['status'] == "OK":
                 break
-
+      
         page = dataJoox['result']['mp3Link']
         laguJoox = dataJoox['result']['lagu']
 
