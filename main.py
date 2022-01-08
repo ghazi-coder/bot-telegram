@@ -214,9 +214,6 @@ def downloadvidinstagram(message):
 # FULL STORY downloader
 @bot.message_handler(commands=['igs'])
 def downloadStoriesIG(message):
-# FULL STORY downloader
-@bot.message_handler(commands=['igs'])
-def downloadStoriesIG(message):
      # cari id dari username
         try:   # eror username
             key = 0
