@@ -203,6 +203,7 @@ def downloadvidinstagram(message):
                 break
             else:
                 bot.send_message(message.chat.id, "tidak dapat mengunduh konten image/konten berslide!")
+                break
         except:
             key -= 1
             continue
