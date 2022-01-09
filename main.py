@@ -238,19 +238,24 @@ def downloadvidtiktok(message):
 @bot.message_handler(regexp='https://www.instagram.com/') # IG konten/REELS/TV
 def downloadvidinstagram(message):
  # scrape konten
-    konten = Post(message.text)
-    konten.scrape()
-    if konten.to_dict()['is_video']: # jika konten adalah video
-        bot.send_chat_action(message.chat.id, "upload_video")
-        konten.download(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4")
-        bot.send_video(message.chat.id, open(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4", "rb"))
-        log(message, f"IG VIDEO{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}")
-    else:  # jika konten adalah image
-        bot.send_chat_action(message.chat.id, "upload_photo")
-        konten.download(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.jpg")
-        bot.send_video(message.chat.id, open(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4", "rb"))
-        log(message, f"IG IMAGE{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}")
+    url = f"https://www.instagram.com/p/{message.text.split('/')[-2]}/?__a=1"
+    SESSIONID = '2135077396%3AcIBHAe6JNABIfo%3A12' # ganti session id
+    headers = {"user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36 Edg/87.0.664.57",
+            "cookie": f"sessionid={SESSIONID};"}
+    r = requests.get(url, headers=headers)
+    data = r.json()['graphql']['shortcode_media']
 
+    if data['is_video']:
+        bot.send_chat_action(message.chat.id, "upload_video")
+        unduhVideo(data['video_url'], f"{data['owner']['username']}_{data['shortcode']}.mp4")
+        bot.send_video(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.mp4", "rb"))
+        log(message, f"IG VIDEO {data['owner']['username']}_{data['shortcode']}")
+
+    else:
+        bot.send_chat_action(message.chat.id, "upload_photo")
+        unduhVideo(data['display_url'], f"{data['owner']['username']}_{data['shortcode']}.jpg")
+        bot.send_video(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.jpg", "rb"))
+        log(message, f"IG IMAGE {data['owner']['username']}_{data['shortcode']}")
 
 
 # key rapid api https://rapidapi.com/Prasadbro/api/instagram47/                                                             """
