@@ -7,3 +7,4 @@ requests==2.26.0
 soupsieve==2.2.1
 urllib3==1.26.6
 moviepy==1.0.3
+insta-scrape==2.1.2
