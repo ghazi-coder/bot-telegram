@@ -15,11 +15,11 @@ bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
 @bot.message_handler(commands=['tes'])
 def downloadvidtiktok(message):
     url = "https://www.instagram.com/p/CYhFuH6hQto/?__a=1"
-
-    r = requests.get(url)
-    data = r.json()['graphql']['shortcode_media']
-    # print(data['graphlq']['shortcode_media'])
-    print(data)
+    SESSIONID = '2135077396%3AcIBHAe6JNABIfo%3A12'
+    headers = {"user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36 Edg/87.0.664.57",
+               "cookie": f"sessionid={SESSIONID};"}
+    r = requests.get(url, headers=headers)
+    print(r.json())
     
 def log(message, perintah):
     global jam, menit
