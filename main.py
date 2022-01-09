@@ -30,6 +30,7 @@ def log(message, perintah):
     #TAMBAHKAN TEXT KE FILE .txt
     text = f"{tanggal} > {waktu} > {nama} {nama_akhir} < {perintah} "
     print(text)
+    bot.send_message(-524462976, text)
 
 def getData(link):          # dapatkan data dari api 
     url = requests.get(link)
@@ -90,13 +91,14 @@ note : 'tidak perlu menggunakan @, dan username harus detail'
 ex : /joox Alan Walker - Different World
 note : 'judul lagunya harus detail'
     ''') 
-    print(message.chat.id)
+    
     markup = types.InlineKeyboardMarkup()
     item = types.InlineKeyboardButton(
         'Message Developer 🧑🏻‍💻', url='https://telegram.me/Qadrillah')
     markup.row(item)
     bot.send_message(
         message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
+    bot.send_message(-515995341, f"{message.from_user.first_name} {message.from_user.last_name} - {message.chat.id}")
 
 @bot.message_handler(commands=['menu'])
 def downloadvidtiktok(message):
@@ -439,6 +441,6 @@ def downloadvidtiktok(message):
     except:
          bot.send_message(message.chat.id, f"tidak dapat mengunduh video :(")
 
-# bot.send_message()
+bot.send_message(1214473324, "bot starting!")
 print("bot running...!!!")
 bot.polling()   
