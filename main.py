@@ -1,19 +1,16 @@
+from requests import api
 import telebot
 from telebot import types
-#modul waktu
 import datetime
 import time
-#modul scrapping web
 from urllib.request import urlopen
 import urllib
-
 import json
 import requests
-from bs4 import BeautifulSoup
-#modul mengambil data secara random
 import random
-#
 import os
+from instascrape import *
+
 bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
 
 def log(message, perintah):
