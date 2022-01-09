@@ -224,43 +224,25 @@ def downloadvidtiktok(message):
 
 
 
-"""                                                     INSTAGRAM  
+"""                                                     INSTAGRAM                                   """
+@bot.message_handler(regexp='https://www.instagram.com/') # IG konten/REELS/TV
+def downloadvidinstagram(message):
+ # scrape konten
+    konten = Post(message.text)
+    konten.scrape()
+    if konten.to_dict()['is_video']: # jika konten adalah video
+        konten.download(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4")
+        bot.send_video(message.chat.id, open(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4", "rb"))
+        log(message, f"IG VIDEO{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}")
+    else:  # jika konten adalah image
+        konten.download(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.jpg")
+        bot.send_video(message.chat.id, open(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4", "rb"))
+        log(message, f"IG IMAGE{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}")
+
+
+
 # key rapid api https://rapidapi.com/Prasadbro/api/instagram47/                                                             """
 api2 = ["c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c", "f355e8c71bmsh2f12c8e8772a755p1aba64jsn14d36932fc37"]
-@bot.message_handler(regexp='https://www.instagram.com/') # IG POST/REELS/TV
-def downloadvidinstagram(message):
-    key = len(api2) - 1
-    while True: # ambil api key yang masih berlaku
-        try:     
-            
-            bot.send_chat_action(message.chat.id, "upload_video")
-            url = "https://instagram47.p.rapidapi.com/post_details"
-            querystring = {"shortcode": message.text.split('/')[len(message.text.split('/')) - 2]} 
-            headers = {
-            'x-rapidapi-host': "instagram47.p.rapidapi.com",
-            'x-rapidapi-key': api2[key] # i
-            }
-            response = requests.request(
-                "GET", url, headers=headers, params=querystring)
-                
-            data = json.loads(response.text)
-    
-            if data['status'] == "Success":
-                urlVideo = data['body']['video_url'] 
-                unduhVideo(urlVideo, f"{message.text.split('/')[len(message.text.split('/')) - 2]}.mp4")
-                bot.send_chat_action(message.chat.id, "upload_video")
-                bot.send_video(message.chat.id, open(f"{message.text.split('/')[len(message.text.split('/')) - 2]}.mp4", 'rb'))
-
-                log(message, f"INSTAGRAM Video {key} {data['body']['owner']['username']}")
-                break
-            else:
-                bot.send_message(message.chat.id, "tidak dapat mengunduh konten image/konten berslide!")
-                break
-        except:
-            key -= 1
-            continue
-        
-
 
 
 # FULL STORY downloader
