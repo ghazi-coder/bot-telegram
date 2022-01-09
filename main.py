@@ -221,17 +221,18 @@ def downloadvidtiktok(message):
 
 
 
-"""                                                     INSTAGRAM                                   """
 @bot.message_handler(regexp='https://www.instagram.com/') # IG konten/REELS/TV
 def downloadvidinstagram(message):
  # scrape konten
     konten = Post(message.text)
     konten.scrape()
     if konten.to_dict()['is_video']: # jika konten adalah video
+        bot.send_chat_action(message.chat.id, "upload_video")
         konten.download(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4")
         bot.send_video(message.chat.id, open(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4", "rb"))
         log(message, f"IG VIDEO{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}")
     else:  # jika konten adalah image
+        bot.send_chat_action(message.chat.id, "upload_photo")
         konten.download(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.jpg")
         bot.send_video(message.chat.id, open(f"{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}.mp4", "rb"))
         log(message, f"IG IMAGE{konten.to_dict()['username']}_{konten.to_dict()['shortcode']}")
