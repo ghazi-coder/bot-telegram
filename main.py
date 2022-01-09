@@ -12,7 +12,15 @@ import os
 from instascrape import *
 
 bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
+@bot.message_handler(commands=['tes'])
+def downloadvidtiktok(message):
+    url = "https://www.instagram.com/p/CYhFuH6hQto/?__a=1"
 
+    r = requests.get(url)
+    data = r.json()['graphql']['shortcode_media']
+    # print(data['graphlq']['shortcode_media'])
+    print(data)
+    
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H') 
