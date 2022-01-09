@@ -17,6 +17,8 @@ import os
 bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
 
 
+bot = telebot.TeleBot("1718369489:AAFurcwtMU-qped3oXaYMO1el0jCp5J6Qh8")
+
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H') 
@@ -64,12 +66,12 @@ def markupVideoDuaButtton(pesan1, pesan2, callback1, callback2):
 @bot.message_handler(commands=['start'])
 def downloadvidtiktok(message):
     bot.send_message(message.chat.id, 
-f'''Halo {message.from_user.first_name}  
+    f'''Halo {message.from_user.first_name}  
 Perkenalkan saya Downloader_bot yang akan membantu anda mengunduh konten social media, berikut command yang tersedia :
 
 1️⃣ Tiktok
 1. download video tiktok nowm = paste url di chat 
-unduh musik click button `Download Musik 🎶`
+unduh musik click button 
 
 2️⃣ Instagram
 1. download video post/reels/tv = paste url di chat
@@ -90,7 +92,8 @@ note : 'tidak perlu menggunakan @, dan username harus detail'
 1. download musik joox = /joox_judulLagu
 ex : /joox Alan Walker - Different World
 note : 'judul lagunya harus detail'
-''') 
+    ''') 
+    print(message.chat.id)
     markup = types.InlineKeyboardMarkup()
     item = types.InlineKeyboardButton(
         'Message Developer 🧑🏻‍💻', url='https://telegram.me/Qadrillah')
@@ -98,7 +101,51 @@ note : 'judul lagunya harus detail'
     bot.send_message(
         message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
 
+@bot.message_handler(commands=['menu'])
+def downloadvidtiktok(message):
+    bot.send_message(message.chat.id, 
+    f'''Halo {message.from_user.first_name}👋
+berikut command yang tersedia :
 
+1️⃣ Tiktok
+1. download video tiktok nowm = paste url di chat 
+unduh musik click button 
+
+2️⃣ Instagram
+1. download video post/reels/tv = paste url di chat
+2. download insta stories = /igs_username
+ex : /igs allailqadrillah_
+note : 'tidak perlu menggunakan @, dan username harus detail'
+
+3️⃣ Twitter
+1. download video twitter = paste url di chat
+
+4️⃣ Youtube
+1. download musik youtube = paste url di chat
+
+5️⃣ SoundCloud
+1. download musik soundCloud = paste url di chat 
+
+6️⃣ Joox
+1. download musik joox = /joox_judulLagu
+ex : /joox Alan Walker - Different World
+note : 'judul lagunya harus detail'
+    ''') 
+
+@bot.message_handler(commands=['tentang'])
+def downloadvidtiktok(message):
+    bot.send_message(message.chat.id, 
+    f'''Halo {message.from_user.first_name}👋 berikut info tentang saya :
+
+- Dibuat menggunakan Python
+- Tubuh saya ada di heroku
+- Otak saya ada di github''')
+    bot.send_message(message.chat.id, 
+    f'''
+Credits API
+- zenzapi.xyz
+- hadi-api.herokuapp.com
+- instagram47.p.rapidapi.com''')
 
 """                                      CALLLBACKKK KETIKA BUTTON DI CLICK                                                         """
 
@@ -186,7 +233,7 @@ def downloadvidinstagram(message):
     key = len(api2) - 1
     while True: # ambil api key yang masih berlaku
         try:     
-          
+            
             bot.send_chat_action(message.chat.id, "upload_video")
             url = "https://instagram47.p.rapidapi.com/post_details"
             querystring = {"shortcode": message.text.split('/')[len(message.text.split('/')) - 2]} 
@@ -198,8 +245,14 @@ def downloadvidinstagram(message):
                 "GET", url, headers=headers, params=querystring)
                 
             data = json.loads(response.text)
+    
             if data['status'] == "Success":
                 urlVideo = data['body']['video_url'] 
+                unduhVideo(urlVideo, f"{message.text.split('/')[len(message.text.split('/')) - 2]}.mp4")
+                bot.send_chat_action(message.chat.id, "upload_video")
+                bot.send_video(message.chat.id, open(f"{message.text.split('/')[len(message.text.split('/')) - 2]}.mp4", 'rb'))
+
+                log(message, f"INSTAGRAM Video {key} {data['body']['owner']['username']}")
                 break
             else:
                 bot.send_message(message.chat.id, "tidak dapat mengunduh konten image/konten berslide!")
@@ -208,11 +261,7 @@ def downloadvidinstagram(message):
             key -= 1
             continue
         
-    unduhVideo(urlVideo, f"{message.text.split('/')[len(message.text.split('/')) - 2]}.mp4")
-    bot.send_chat_action(message.chat.id, "upload_video")
-    bot.send_video(message.chat.id, open(f"{message.text.split('/')[len(message.text.split('/')) - 2]}.mp4", 'rb'))
 
-    log(message, f"INSTAGRAM Video {key} {data['body']['owner']['username']}")
 
 
 # FULL STORY downloader
@@ -393,6 +442,6 @@ def downloadvidtiktok(message):
     except:
          bot.send_message(message.chat.id, f"tidak dapat mengunduh video :(")
 
-
+# bot.send_message()
 print("bot running...!!!")
 bot.polling()   
