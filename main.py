@@ -169,21 +169,16 @@ callbackOriTiktok =[]
 callbackVidTiktok =[]
 @bot.message_handler(regexp='https://vt.tiktok.com/')
 def downloadvidtiktok(message):
+def downloadvidtiktok(message):
     # dapatkan data dari api hingga berhasil
     try:
-        i = len(api_key) - 1
-        while True:
-            bot.send_chat_action(message.chat.id, "upload_video")
-            link = f"https://zenzapi.xyz/downloader/musically?url={message.text}&apikey={api_key[i]}"
-            dataTiktok = getData(link)
-            if dataTiktok['status'] == False:
-                i -= 1
-            elif dataTiktok['status'] == "OK":
-                break
-        # ambil url yang diperlukan
-        urlNOWM = dataTiktok['result']['nowm']
-        urlAudio = dataTiktok['result']['audio']
-   
+        bot.send_chat_action(message.chat.id, "upload_video")
+        link = f"https://hadi-api.herokuapp.com/api/tiktok?url={message.text}"
+        dataTiktok = getData(link)
+        # dapatankan link yang diperlukan
+        urlNOWM = dataTiktok['result']['video']['nowm']
+        urlAudio = dataTiktok['result']['audio_only']['audio1']
+
         file = f"{message.from_user.first_name}_{message.text.split('/')[3]}"
         file2 = f"{message.from_user.first_name}_{message.text.split('/')[3]}-video"
         # unduh file
@@ -195,15 +190,22 @@ def downloadvidtiktok(message):
         callbackOriTiktok.append(file)
         callbackVidTiktok.append(file2)
 
-        log(message, f"TIKTOK VID ZENZ- {i}")
+        log(message, f"TIKTOK VID HADI ")
         unduhMusik(urlAudio, f"{file}.mp3")
+
     except:                                 # API CADANGAN
-            bot.send_chat_action(message.chat.id, "upload_video")
-            link = f"https://hadi-api.herokuapp.com/api/tiktok?url={message.text}"
-            dataTiktok = getData(link)
-            # dapatankan link yang diperlukan
-            urlNOWM = dataTiktok['result']['video']['nowm']
-            urlAudio = dataTiktok['result']['audio_only']['audio1']
+            i = len(api_key) - 1
+            while True:
+                bot.send_chat_action(message.chat.id, "upload_video")
+                link = f"https://zenzapi.xyz/downloader/musically?url={message.text}&apikey={api_key[i]}"
+                dataTiktok = getData(link)
+                if dataTiktok['status'] == False:
+                    i -= 1
+                elif dataTiktok['status'] == "OK":
+                    break
+            # ambil url yang diperlukan
+            urlNOWM = dataTiktok['result']['nowm']
+            urlAudio = dataTiktok['result']['audio']
     
             file = f"{message.from_user.first_name}_{message.text.split('/')[3]}"
             file2 = f"{message.from_user.first_name}_{message.text.split('/')[3]}-video"
@@ -216,8 +218,9 @@ def downloadvidtiktok(message):
             callbackOriTiktok.append(file)
             callbackVidTiktok.append(file2)
 
-            log(message, f"TIKTOK VID HADI ")
+            log(message, f"TIKTOK VID ZENZ- {i}")
             unduhMusik(urlAudio, f"{file}.mp3")
+
 
 
 
