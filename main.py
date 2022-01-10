@@ -169,7 +169,6 @@ callbackOriTiktok =[]
 callbackVidTiktok =[]
 @bot.message_handler(regexp='https://vt.tiktok.com/')
 def downloadvidtiktok(message):
-def downloadvidtiktok(message):
     # dapatkan data dari api hingga berhasil
     try:
         bot.send_chat_action(message.chat.id, "upload_video")
