@@ -330,8 +330,41 @@ def downloadStoriesIG(message):
 
 
         except: # eror username
-            bot.send_message(message.chat.id, dataID['Warning'])    
+            bot.send_message(message.chat.id, dataID['Warning'])  
+          
+# stalk akun instagram
+@bot.message_handler(commands=['igstalk'])
+def downloadStoriesIG(message):
+    try:
+        bot.send_chat_action(message.chat.id, "upload_photo")
+        url = f"https://www.instagram.com/{message.text.split(' ')[1]}/?__a=1"
+        SESSIONID = '51038695795%3AreeyFZX3qR6BBo%3A6' # ganti session id
+        headers = {"user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36 Edg/87.0.664.57",
+                "cookie": f"sessionid={SESSIONID};"}
+        r = requests.get(url, headers=headers)
+        data = r.json()['graphql']
 
+        user = data['user']
+        unduhVideo(user['profile_pic_url_hd'], f"{message.text.split(' ')[1]}.jpg")
+        bot.send_photo(message.chat.id, open( f"{message.text.split(' ')[1]}.jpg", 'rb' ))
+        bot.send_chat_action(message.chat.id, "typing")
+        output = f"""
+Nama : {user['full_name']}
+Username : {message.text.split(' ')[1]}
+Category : { user['category_name']}
+Private? : {user['is_private']}
+Followers : {user['edge_followed_by']['count']}
+Following : {user['edge_follow']['count']}
+Postingan : {user['edge_owner_to_timeline_media']['count']}
+bio : 
+{user['biography']}
+"""
+
+        bot.send_message(message.chat.id, output)
+        log(message, f"igStalk {message.text.split(' ')[1]}")
+    except:
+        bot.send_message(message.chat.id, "username tidak ditemukan")
+  
 
 """                                             JOOX                                                            """
 callbackJoox = []
