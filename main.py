@@ -231,7 +231,7 @@ def downloadvidinstagram(message):
     r = requests.get(url, headers=headers)
     data = r.json()['graphql']['shortcode_media']
 
-    if data['edge_sidecar_to_children']['edges']: # jika konten berslide
+    if data['__typename'] == "GraphSidecar": # jika konten berslide
         dataSlide = data['edge_sidecar_to_children']['edges']#['node']
         for i in range(0, len(dataSlide)): # untuk setiap konten
             if dataSlide[i]['node']['is_video']: # jika konten adalah video
