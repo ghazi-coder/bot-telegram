@@ -12,21 +12,7 @@ import os
 from instascrape import *
 
 bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
-@bot.message_handler(commands=['tes'])
-def downloadvidtiktok(message):
-    url = "https://www.instagram.com/p/CYOtbrCINMS/?__a=1"
-    SESSIONID = '2135077396%3AcIBHAe6JNABIfo%3A12'
-    headers = {"user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36 Edg/87.0.664.57",
-               "cookie": f"sessionid={SESSIONID};"}
-    r = requests.get(url, headers=headers)
-
-    data = r.json()['graphql']['shortcode_media']
-
-    if data['is_video']:
-        print(data['video_url'])
-    else:
-        print(data['display_url'])
-    
+ 
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H') 
@@ -246,32 +232,31 @@ def downloadvidinstagram(message):
     data = r.json()['graphql']['shortcode_media']
 
     if data['edge_sidecar_to_children']['edges']: # jika konten berslide
-        dataSlide = data['edge_sidecar_to_children']['edges']['node']
-        for i in data['edge_sidecar_to_children']['edges']: # untuk setiap konten
-            if dataSlide['is_video']:
+        dataSlide = data['edge_sidecar_to_children']['edges']#['node']
+        for i in range(0, len(dataSlide)): # untuk setiap konten
+            if dataSlide[i]['node']['is_video']: # jika konten adalah video
                 bot.send_chat_action(message.chat.id, "upload_video")
-                unduhVideo(dataSlide['video_url'], f"{data['owner']['username']}_{data['shortcode']}.mp4")
+                unduhVideo(dataSlide[i]['node']['video_url'], f"{data['owner']['username']}_{data['shortcode']}.mp4")
                 bot.send_video(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.mp4", "rb"))  
 
-            else:
+            else: # jika konten adalah gambar
                 bot.send_chat_action(message.chat.id, "upload_photo")
-                unduhVideo(dataSlide['display_url'], f"{data['owner']['username']}_{data['shortcode']}.jpg")
+                unduhVideo(dataSlide[i]['node']['display_url'], f"{data['owner']['username']}_{data['shortcode']}.jpg")
                 bot.send_photo(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.jpg", "rb"))
-        log(message, f"IG POST SLIDE {data['owner']['username']}_{data['shortcode']} {i}")
+        log(message, f"IG POST SLIDE {data['owner']['username']}_{data['shortcode']} {len(dataSlide)}")
 
     else: # jika hanya konten biasa
-        if data['is_video']:
+        if data['is_video']: 
             bot.send_chat_action(message.chat.id, "upload_video")
             unduhVideo(data['video_url'], f"{data['owner']['username']}_{data['shortcode']}.mp4")
             bot.send_video(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.mp4", "rb"))
             log(message, f"IG VIDEO {data['owner']['username']}_{data['shortcode']}")
 
-        else:
+        else: # jika konten adalah gambar
             bot.send_chat_action(message.chat.id, "upload_photo")
             unduhVideo(data['display_url'], f"{data['owner']['username']}_{data['shortcode']}.jpg")
             bot.send_photo(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.jpg", "rb"))
             log(message, f"IG IMAGE {data['owner']['username']}_{data['shortcode']}")
-
 
 # key rapid api https://rapidapi.com/Prasadbro/api/instagram47/                                                             """
 api2 = ["c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c", "f355e8c71bmsh2f12c8e8772a755p1aba64jsn14d36932fc37"]
