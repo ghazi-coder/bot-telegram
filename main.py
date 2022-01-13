@@ -12,7 +12,7 @@ import os
 from instascrape import *
 
 bot = telebot.TeleBot("5049086779:AAGUeZhsHHBT7x250K0Wc1zGzYXjrrDbjv8")
- 
+
 def log(message, perintah):
     global jam, menit
     jam = time.strftime('%H') 
@@ -58,12 +58,31 @@ def markupVideoDuaButtton(pesan1, pesan2, callback1, callback2):
     markup.row(item2)
     return markup
 
+def updateStatus(menu, status): 
+    """menu paste > {hurufbesar}nama 
+       menu tulis > {sesuai dg namanya}"""
+    file = open("status.json", "rb") #buka file
+
+    readJson = json.load(file) # load data jsonnya
+    readJson[menu] = status 
+
+    file = open("status.json", 'w') # ubah isinya
+    json.dump(readJson, file)
+    file.close()
+
+def panggilStatus(menu):
+    file = open("status.json", "rb") #buka file
+
+    readJson = json.load(file) # load data jsonnya
+    status = readJson[menu] 
+    file.close()
+    return status
+
 @bot.message_handler(commands=['start'])
 def downloadvidtiktok(message):
     bot.send_message(message.chat.id, 
     f'''Halo {message.from_user.first_name}  
 Perkenalkan saya Downloader_bot yang akan membantu anda mengunduh konten social media, berikut command yang tersedia :
-
 1️⃣ Tiktok
 1. download video tiktok nowm = paste url di chat 
 unduh musik click button 
@@ -87,7 +106,7 @@ note : 'tidak perlu menggunakan @, dan username harus detail'
 1. download musik joox = /joox_judulLagu
 ex : /joox Alan Walker - Different World
 note : 'judul lagunya harus detail'
-    ''') 
+    ''', ) 
     
     markup = types.InlineKeyboardMarkup()
     item = types.InlineKeyboardButton(
@@ -97,42 +116,50 @@ note : 'judul lagunya harus detail'
         message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
     bot.send_message(-515995341, f"{message.from_user.first_name} {message.from_user.last_name} - {message.chat.id}")
 
+
 @bot.message_handler(commands=['menu'])
 def downloadvidtiktok(message):
+    dataStatus = [panggilStatus('Tiktok'), #0
+                panggilStatus('Instagram'), #1
+                panggilStatus('igs'), #2
+                panggilStatus('igStalk'), #3
+                panggilStatus('Twitter'),
+                panggilStatus('Youtube'),
+                panggilStatus('SoundCloud'),
+                panggilStatus('Joox')]#7
     bot.send_message(message.chat.id, 
     f'''Halo {message.from_user.first_name}👋
 berikut command yang tersedia :
-
-1️⃣ Tiktok
-1. download video tiktok nowm = paste url di chat 
+1️⃣ Tiktok 
+1. download video tiktok nowm{dataStatus[0]} = paste url di chat 
 unduh musik click button 
 
 2️⃣ Instagram
-1. download video post/reels/tv = paste url di chat
-2. download insta stories = /igs_username
+1. download video post/reels/tv{dataStatus[1]} = paste url di chat
+2. download insta stories{dataStatus[2]} = /igs_username
 ex : /igs allailqadrillah_
 note : 'tidak perlu menggunakan @, dan username harus detail'
 
 3️⃣ Twitter
-1. download video twitter = paste url di chat
+1. download video twitter{dataStatus[4]} = paste url di chat
 
 4️⃣ Youtube
-1. download musik youtube = paste url di chat
+1. download musik youtube{dataStatus[5]} = paste url di chat
 
 5️⃣ SoundCloud
-1. download musik soundCloud = paste url di chat 
+1. download musik soundCloud{dataStatus[6]} = paste url di chat 
 
 6️⃣ Joox
-1. download musik joox = /joox_judulLagu
+1. download musik joox{dataStatus[7]} = /joox_judulLagu
 ex : /joox Alan Walker - Different World
 note : 'judul lagunya harus detail'
+
     ''') 
 
 @bot.message_handler(commands=['tentang'])
 def downloadvidtiktok(message):
     bot.send_message(message.chat.id, 
     f'''Halo {message.from_user.first_name}👋 berikut info tentang saya :
-
 - Dibuat menggunakan Python
 - Tubuh saya ada di heroku
 - Otak saya ada di github''')
@@ -324,13 +351,16 @@ def downloadStoriesIG(message):
 
                     bot.send_message(message.chat.id, f"total {len(data)} stories")
                     log(message, f"IG STORY {key} {message.text[5:]}")
+                    updateStatus('igs', '✅')
             except: # kirim pesan jika terdapat error
                 bot.send_message(message.chat.id, "tidak dapat mengunduh story :(")    
                 bot.send_message(message.chat.id, "jika masalah masih berlanjut, hubungi developer yaa")   
-
+             
 
         except: # eror username
             bot.send_message(message.chat.id, dataID['Warning'])  
+            updateStatus('igs', '❎')
+
           
 # stalk akun instagram
 @bot.message_handler(commands=['igstalk'])
@@ -362,8 +392,10 @@ bio :
 
         bot.send_message(message.chat.id, output)
         log(message, f"igStalk {message.text.split(' ')[1]}")
+        updateStatus('igStalk', '✅')
     except:
         bot.send_message(message.chat.id, "username tidak ditemukan")
+        updateStatus('igStalk', '❎')
   
 
 """                                             JOOX                                                            """
@@ -391,10 +423,12 @@ def downloadjoox(message):
         bot.send_chat_action(message.chat.id, "upload_audio")
         bot.send_audio(message.chat.id, open(f"{laguJoox}.mp3", 'rb'))
         log(message, f"JOOX {i} {laguJoox}")
+        updateStatus('Joox', '✅')
         # buat tombol untuk mendapatkan lirik lagunya
     except:
         bot.send_message(message.chat.id, f"tidak dapat mengunduh musik {message.text[6:]} :(")
-      
+        updateStatus('Joox', '❎')
+        
 """
                                    YOUTUBE MUSIK DOWNLOADER                         
 """
@@ -403,7 +437,7 @@ def downloadMusikYoutube(message):
     try:
         i = 0
         while True:
-            print(i)
+
             bot.send_chat_action(message.chat.id, "upload_audio")
             url = requests.get(f"https://zenzapi.xyz/downloader/ytmp3?url={message.text}&index=2&apikey={api_key[i]}")
             data = url.json()
@@ -420,8 +454,10 @@ def downloadMusikYoutube(message):
         bot.send_chat_action(message.chat.id, "upload_audio")
         bot.send_audio(message.chat.id, open(f"{title}.mp3", 'rb'))
         log(message, f"YOUTUBE {i} {title}")
+        updateStatus('Youtube', '✅')
     except:
         bot.send_message(message.chat.id, f"tidak dapat mengunduh musik :(")
+        updateStatus('Youtube', '❎')
 
 """                                 SOUND CLOUND DOWNLOADER                                                                             """
 @bot.message_handler(regexp='https://soundcloud.com/')
@@ -447,8 +483,10 @@ def downloadjoox(message):
         bot.send_chat_action(message.chat.id, "upload_audio")
         bot.send_audio(message.chat.id, open(f"{title}.mp3", 'rb'))
         log(message, f"SOUNDCLOUD {i} {title}")
+        updateStatus('SoundCloud', '✅')
     except:
          bot.send_message(message.chat.id, f"tidak dapat mengunduh musik :(")
+         updateStatus('SoundCloud', '❎')
 
 
 """                                TWITTER DOWNLOADER                                    """
@@ -472,9 +510,11 @@ def downloadvidtiktok(message):
         unduhVideo(video, f"{message.from_user.first_name}_twitter.mp4")
         bot.send_video(message.chat.id, open(f"{message.from_user.first_name}_twitter.mp4", 'rb'))
         log(message, f"TWITTER {i} ")
+        updateStatus('Twitter', '✅')
     except:
          bot.send_message(message.chat.id, f"tidak dapat mengunduh video :(")
+         updateStatus('Twitter', '❎')
 
 bot.send_message(1214473324, "bot starting!")
 print("bot running...!!!")
-bot.polling()   
+bot.polling()  
