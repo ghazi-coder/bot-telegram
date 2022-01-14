@@ -190,7 +190,7 @@ def callbacks(call):
             log(call.message, f"TIKTOK AUDIO CONVERT")
 
 # key ZENZAPI
-api_key = ["b9b38e428d49", "6301bfc9de", "f64a95d64260", "879b62e71cdf"] 
+api_key = ["b9b38e428d49"] 
 """                                          TIKTOK DOWNLOADER                                                                  """
 callbackOriTiktok =[]
 callbackVidTiktok =[]
@@ -198,28 +198,6 @@ callbackVidTiktok =[]
 def downloadvidtiktok(message):
     # dapatkan data dari api hingga berhasil
     try:
-        bot.send_chat_action(message.chat.id, "upload_video")
-        link = f"https://hadi-api.herokuapp.com/api/tiktok?url={message.text}"
-        dataTiktok = getData(link)
-        # dapatankan link yang diperlukan
-        urlNOWM = dataTiktok['result']['video']['nowm']
-        urlAudio = dataTiktok['result']['audio_only']['audio1']
-
-        file = f"{message.from_user.first_name}_{message.text.split('/')[3]}"
-        file2 = f"{message.from_user.first_name}_{message.text.split('/')[3]}-video"
-        # unduh file
-        bot.send_chat_action(message.chat.id, "upload_video")
-        unduhVideo(urlNOWM, f"{file}.mp4")
-        markup = markupVideoDuaButtton('Download Musik Original 🎶', 'Download Musik Video 🎶', file, file2)
-        # kirim video dan button untuk mendownload musik
-        bot.send_video(message.chat.id, open(f"{file}.mp4", 'rb'), reply_markup=markup)
-        callbackOriTiktok.append(file)
-        callbackVidTiktok.append(file2)
-
-        log(message, f"TIKTOK VID HADI ")
-        unduhMusik(urlAudio, f"{file}.mp3")
-
-    except:                                 # API CADANGAN
             i = len(api_key) - 1
             while True:
                 bot.send_chat_action(message.chat.id, "upload_video")
@@ -244,8 +222,31 @@ def downloadvidtiktok(message):
             callbackOriTiktok.append(file)
             callbackVidTiktok.append(file2)
 
-            log(message, f"TIKTOK VID ZENZ- {i}")
+            log(message, f"TIKTOK VID ZENZ- {message.text}")
             unduhMusik(urlAudio, f"{file}.mp3")
+
+    except:                                 # API CADANGAN
+            bot.send_chat_action(message.chat.id, "upload_video")
+            link = f"https://hadi-api.herokuapp.com/api/tiktok?url={message.text}"
+            dataTiktok = getData(link)
+            # dapatankan link yang diperlukan
+            urlNOWM = dataTiktok['result']['video']['nowm']
+            urlAudio = dataTiktok['result']['audio_only']['audio1']
+
+            file = f"{message.from_user.first_name}_{message.text.split('/')[3]}"
+            file2 = f"{message.from_user.first_name}_{message.text.split('/')[3]}-video"
+            # unduh file
+            bot.send_chat_action(message.chat.id, "upload_video")
+            unduhVideo(urlNOWM, f"{file}.mp4")
+            markup = markupVideoDuaButtton('Download Musik Original 🎶', 'Download Musik Video 🎶', file, file2)
+            # kirim video dan button untuk mendownload musik
+            bot.send_video(message.chat.id, open(f"{file}.mp4", 'rb'), reply_markup=markup)
+            callbackOriTiktok.append(file)
+            callbackVidTiktok.append(file2)
+
+            log(message, f"TIKTOK VID HADI ")
+            unduhMusik(urlAudio, f"{file}.mp3")
+
 
 
 
