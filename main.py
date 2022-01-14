@@ -113,7 +113,7 @@ note : 'judul lagunya harus detail'
         'Message Developer 🧑🏻‍💻', url='https://telegram.me/Qadrillah')
     markup.row(item)
     bot.send_message(
-        message.chat.id, 'jika ada saran fitur ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
+        message.chat.id, 'jika ada fitur yang ingin ditambahkan ataupun bot terdapat masalah, bisa klik button dibawah', reply_markup=markup)
     bot.send_message(-515995341, f"{message.from_user.first_name} {message.from_user.last_name} - {message.chat.id}")
 
 
@@ -131,26 +131,26 @@ def downloadvidtiktok(message):
     f'''Halo {message.from_user.first_name}👋
 berikut command yang tersedia :
 1️⃣ Tiktok 
-1. download video tiktok nowm{dataStatus[0]} = paste url di chat 
+1. video Tiktok nowm{dataStatus[0]} = paste url di chat 
 unduh musik click button 
 
 2️⃣ Instagram
-1. download video post/reels/tv{dataStatus[1]} = paste url di chat
-2. download insta stories{dataStatus[2]} = /igs_username
+1. video post/reels/tv{dataStatus[1]} = paste url di chat
+2. stories{dataStatus[2]} = /igs username
 ex : /igs allailqadrillah_
 note : 'tidak perlu menggunakan @, dan username harus detail'
 
 3️⃣ Twitter
-1. download video twitter{dataStatus[4]} = paste url di chat
+1. video Twitter{dataStatus[4]} = paste url di chat
 
 4️⃣ Youtube
-1. download musik youtube{dataStatus[5]} = paste url di chat
+1. audio Youtube{dataStatus[5]} = paste url di chat
 
 5️⃣ SoundCloud
-1. download musik soundCloud{dataStatus[6]} = paste url di chat 
+1. musik SoundCloud{dataStatus[6]} = paste url di chat 
 
 6️⃣ Joox
-1. download musik joox{dataStatus[7]} = /joox_judulLagu
+1. musik Joox{dataStatus[7]} = /joox judulLagu
 ex : /joox Alan Walker - Different World
 note : 'judul lagunya harus detail'
 
