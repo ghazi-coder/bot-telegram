@@ -105,6 +105,7 @@ unduh musik click button
 1. download video post/reels/tv = paste url di chat
 2. download insta stories = /igs_username
 ex : /igs allailqadrillah_
+3. stalking akun = /igstalk username
 note : 'tidak perlu menggunakan @, dan username harus detail'
 
 3️⃣ Twitter
@@ -152,6 +153,7 @@ unduh musik click button
 1. video post/reels/tv{dataStatus[1]} = paste url di chat
 2. stories{dataStatus[2]} = /igs username
 ex : /igs allailqadrillah_
+3. stalking akun{dataStatus[3]} = /igstalk username
 note : 'tidak perlu menggunakan @, dan username harus detail'
 
 3️⃣ Twitter
