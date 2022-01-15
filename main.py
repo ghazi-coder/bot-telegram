@@ -78,6 +78,20 @@ def panggilStatus(menu):
     file.close()
     return status
 
+# Kirim pesan keseluruh pengguna
+idPengguna = [1318920284,1362906837,1090735758,1743797778,261671993,1965688888,866672023,1287257408,1016186562,1353477204,1055650611,2086602433
+,1373534243]
+@bot.message_handler(commands=['kirimGambar'])
+def sendImage(message):
+    unduhVideo(message.text[13:], 'gambar.jpg')
+    for i in idPengguna:
+        bot.send_photo(i, open('gambar.jpg', 'rb'))
+ 
+@bot.message_handler(commands=['kirimPesan'])
+def sendImage(message):
+    for i in idPengguna:
+        bot.send_message(i, message.text[12:])
+
 @bot.message_handler(commands=['start'])
 def downloadvidtiktok(message):
     bot.send_message(message.chat.id, 
