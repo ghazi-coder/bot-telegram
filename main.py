@@ -291,7 +291,7 @@ def downloadvidinstagram(message):
             url = data[0]['carousel_media'][i]['image_versions2']['candidates'][i]['url']
             bot.send_chat_action(message.chat.id, "upload_photo")
             unduhVideo(url, f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.jpg")
-            bot.send_photo(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4", "rb"))  
+            bot.send_photo(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.jpg", "rb"))  
         log(message, f"IG POST SLIDE {data[0]['user']['username']}_{message.text.split('/')[-2]}_{len(data[0]['carousel_media'])}")
     # jika hanya konten biasa
     else:
@@ -306,7 +306,7 @@ def downloadvidinstagram(message):
             url = data[0]['image_versions2']['candidates'][0]['url']
             bot.send_chat_action(message.chat.id, "upload_photo")
             unduhVideo(url, f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.jpg")
-            bot.send_photo(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4", "rb"))  
+            bot.send_photo(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.jpg", "rb"))  
             log(message, f"IG Photo {data[0]['user']['username']}_{message.text.split('/')[-2]}")
 
 # key rapid api https://rapidapi.com/Prasadbro/api/instagram47/                                                             """
