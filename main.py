@@ -271,7 +271,7 @@ def downloadvidtiktok(message):
 def downloadvidinstagram(message):
  # scrape konten
 
-    url = f"https://www.instagram.com/p/CZAiZ42hY5x/?__a=1"
+    url = f"https://www.instagram.com/p/{message.text.split('/')[-2]}/?__a=1"
     SESSIONID = '51038695795%3AreeyFZX3qR6BBo%3A6' # ganti session id
     headers = {"user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36 Edg/87.0.664.57",
             "cookie": f"sessionid={SESSIONID};"}
