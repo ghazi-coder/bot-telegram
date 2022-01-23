@@ -270,39 +270,44 @@ def downloadvidtiktok(message):
 @bot.message_handler(regexp='https://www.instagram.com/') # IG image/REELS/TV
 def downloadvidinstagram(message):
  # scrape konten
-    url = f"https://www.instagram.com/p/{message.text.split('/')[-2]}/?__a=1"
+
+    url = f"https://www.instagram.com/p/CZAiZ42hY5x/?__a=1"
     SESSIONID = '51038695795%3AreeyFZX3qR6BBo%3A6' # ganti session id
     headers = {"user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36 Edg/87.0.664.57",
             "cookie": f"sessionid={SESSIONID};"}
     r = requests.get(url, headers=headers)
-    data = r.json()['graphql']['shortcode_media']
+    data = r.json()["items"]
 
-    if data['__typename'] == "GraphSidecar": # jika konten berslide
-        dataSlide = data['edge_sidecar_to_children']['edges']#['node']
-        for i in range(0, len(dataSlide)): # untuk setiap konten
-            if dataSlide[i]['node']['is_video']: # jika konten adalah video
-                bot.send_chat_action(message.chat.id, "upload_video")
-                unduhVideo(dataSlide[i]['node']['video_url'], f"{data['owner']['username']}_{data['shortcode']}.mp4")
-                bot.send_video(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.mp4", "rb"))  
-
-            else: # jika konten adalah gambar
-                bot.send_chat_action(message.chat.id, "upload_photo")
-                unduhVideo(dataSlide[i]['node']['display_url'], f"{data['owner']['username']}_{data['shortcode']}.jpg")
-                bot.send_photo(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.jpg", "rb"))
-        log(message, f"IG POST SLIDE {data['owner']['username']}_{data['shortcode']} {len(dataSlide)}")
-
-    else: # jika hanya konten biasa
-        if data['is_video']: 
+    # jika konten berslide
+    if 'carousel_media' in data[0] :
+      for i in range(len(data[0]['carousel_media'])):
+        if data[0]['carousel_media'][i]['media_type'] == 2: # jika video
+            url = data[0]['carousel_media'][i]['video_versions'][0]['url']
             bot.send_chat_action(message.chat.id, "upload_video")
-            unduhVideo(data['video_url'], f"{data['owner']['username']}_{data['shortcode']}.mp4")
-            bot.send_video(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.mp4", "rb"))
-            log(message, f"IG VIDEO {data['owner']['username']}_{data['shortcode']}")
+            unduhVideo(url, f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4")
+            bot.send_video(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4", "rb"))  
 
-        else: # jika konten adalah gambar
+        else: # jika gambar
+            url = data[0]['carousel_media'][i]['image_versions2']['candidates'][i]['url']
             bot.send_chat_action(message.chat.id, "upload_photo")
-            unduhVideo(data['display_url'], f"{data['owner']['username']}_{data['shortcode']}.jpg")
-            bot.send_photo(message.chat.id, open(f"{data['owner']['username']}_{data['shortcode']}.jpg", "rb"))
-            log(message, f"IG IMAGE {data['owner']['username']}_{data['shortcode']}")
+            unduhVideo(url, f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.jpg")
+            bot.send_photo(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4", "rb"))  
+        log(message, f"IG POST SLIDE {data[0]['user']['username']}_{message.text.split('/')[-2]}_{len(data[0]['carousel_media'])}")
+    # jika hanya konten biasa
+    else:
+        if data[0]['media_type'] == 2 : # jika video
+            url = data[0]['video_versions'][0]['url']
+            bot.send_chat_action(message.chat.id, "upload_video")
+            unduhVideo(url, f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4")
+            bot.send_video(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4", "rb"))  
+            log(message, f"IG VIDEO {data[0]['user']['username']}_{message.text.split('/')[-2]}")
+
+        else: # jika gambar
+            url = data[0]['image_versions2']['candidates'][0]['url']
+            bot.send_chat_action(message.chat.id, "upload_photo")
+            unduhVideo(url, f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.jpg")
+            bot.send_photo(message.chat.id, open(f"{data[0]['user']['username']}_{message.text.split('/')[-2]}.mp4", "rb"))  
+            log(message, f"IG Photo {data[0]['user']['username']}_{message.text.split('/')[-2]}")
 
 # key rapid api https://rapidapi.com/Prasadbro/api/instagram47/                                                             """
 api2 = ["c8144b94aamsh08b5fb4cfc6382dp18a232jsn078223838e9c", "f355e8c71bmsh2f12c8e8772a755p1aba64jsn14d36932fc37"]
